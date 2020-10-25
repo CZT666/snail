@@ -8,6 +8,7 @@ import (
 )
 
 func main() {
+	// test
 	settings.Init()
 	err := dao.InitMySQL(settings.Conf)
 	if err != nil {
