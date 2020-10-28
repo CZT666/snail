@@ -9,5 +9,5 @@ func SetupRouter() (engine *gin.Engine) {
 }
 
 func addHandler(engine *gin.Engine) {
-	registerGroup(engine)
+	accessGroup(engine)
 }

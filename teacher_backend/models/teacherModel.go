@@ -26,14 +26,14 @@ func UpdateTeacher(teacher *Teacher) (err error) {
 	return
 }
 
-func GetAllTeacher() (teacherList *[]Teacher, err error) {
+func GetAllTeacher() (teacherList []Teacher, err error) {
 	if err = dao.DB.Find(&teacherList).Error; err != nil {
 		return nil, err
 	}
 	return
 }
 
-func GetTeacher(teacher *Teacher) (teacherList *[]Teacher, err error) {
+func GetTeacher(teacher *Teacher) (teacherList []Teacher, err error) {
 	if err = dao.DB.Where(&teacher).Find(&teacherList).Error; err != nil {
 		return nil, err
 	}
