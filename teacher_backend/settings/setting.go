@@ -8,7 +8,15 @@ import (
 	"path/filepath"
 )
 
-var Conf = new(MySQLConfig)
+var Conf = new(Config)
+
+type Config struct {
+	WorkHost                string `yaml:"workHost"`
+	WorkPort                string `yaml:"workPort"`
+	*MySQLConfig            `yaml:"mysql"`
+	*NSQConfig              `yaml:"nsqProducer"`
+	*ResetPwdConsumerConfig `yaml:"nsqConsumer"`
+}
 
 type MySQLConfig struct {
 	User     string `yaml:"user"`
@@ -16,6 +24,18 @@ type MySQLConfig struct {
 	Host     string `yaml:"host"`
 	Port     int    `yaml:"port"`
 	DB       string `yaml:"db"`
+}
+
+type NSQConfig struct {
+	Host string `yaml:"host"`
+	Port int    `yaml:"port"`
+}
+
+type ResetPwdConsumerConfig struct {
+	Topic   string `yaml:"topic"`
+	Channel string `yaml:"channel"`
+	Host    string `yaml:"host"`
+	Port    int    `yaml:"port"`
 }
 
 func Init() {
@@ -30,6 +50,6 @@ func Init() {
 	}
 	err = yaml.Unmarshal(yamlFile, Conf)
 	if err != nil {
-		fmt.Printf("load config fail: %v\n", err.Error())
+		fmt.Printf("load mysql config fail: %v\n", err.Error())
 	}
 }
