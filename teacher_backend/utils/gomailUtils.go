@@ -11,8 +11,8 @@ import (
 const (
 	HOST     = "smtp.qq.com"
 	PORT     = 465
-	FROM     = "348673210@qq.com"
-	PASSWORD = "yczkpzjnnrsocbcf"
+	FROM     = "3486***@qq.com"
+	PASSWORD = "***"
 )
 
 func SendMail(toMail string, subject string, body string) error {
