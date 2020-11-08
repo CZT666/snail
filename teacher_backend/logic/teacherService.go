@@ -1,14 +1,21 @@
 package logic
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/go-redis/redis"
 	"log"
 	"snail/teacher_backend/common"
 	"snail/teacher_backend/dao"
 	"snail/teacher_backend/models"
 	"snail/teacher_backend/utils"
 	"snail/teacher_backend/vo"
+	"time"
+)
+
+const (
+	resetKeyPreFix = "mail.reset."
 )
 
 func AddTeacher(teacher *models.Teacher) (baseResponse *common.BaseResponse) {
@@ -75,43 +82,76 @@ func ResetPwdReq(mail string) (baseResponse *common.BaseResponse) {
 	baseResponse.Code = common.Success
 	if !isMailExist(mail) {
 		baseResponse.Code = common.MailNotExist
+		log.Printf("Mail already exists: %v\n", mail)
+		return
+	}
+	proofString, err := utils.GenResetProof(mail)
+	if err != nil {
+		baseResponse.Code = common.ServerError
+		log.Printf("Generate mail proof failed: %v\n", err)
 		return
 	}
 	// 将邮箱写入redis
+	err = addResetReqToRedis(mail, proofString)
+	if err != nil {
+		baseResponse.Code = common.ServerError
+		log.Printf("Add reset req into redis failed: %v\n", err)
+		return
+	}
 	// 将发送邮件请求发向消息队列
-	err := sendResetReqToNSQ(mail)
+	err = sendResetReqToNSQ(mail, proofString)
 	if err != nil {
 		log.Printf("Send reset pwd req to nsq error: %v\n", err)
-		// TODO 回滚redis
+		// 回滚redis
+		err = redisDeleteKey(mail)
+		if err != nil {
+			log.Printf("Mail reset req redis rollback failed: %v\n", err)
+		}
 		baseResponse.Code = common.ServerError
 	}
 	return
 }
 
-func sendResetReqToNSQ(mail string) error {
-	proofString, err := utils.GenResetProof(mail)
-	if err != nil {
-		return err
-	}
+func sendResetReqToNSQ(mail string, proof string) error {
 	req := &common.ResetPwdRequest{
 		Mail:  mail,
-		Proof: proofString,
+		Proof: proof,
 	}
 	reqJson, _ := json.Marshal(req)
 	return dao.ResetPwdNSQProducer.Publish("reset_pwd", reqJson)
 }
 
+func addResetReqToRedis(mail string, proof string) error {
+	key := resetKeyPreFix + mail
+	num, err := dao.RedisDB.Set(context.Background(), key, proof, 24*time.Hour).Result()
+	log.Printf("Reset mail request add into redis, total: %v", num)
+	return err
+}
+
+func redisDeleteKey(mail string) error {
+	key := resetKeyPreFix + mail
+	num, err := dao.RedisDB.Del(context.Background(), key).Result()
+	log.Printf("Delete reset mail request redis, total: %v", num)
+	return err
+}
+
 func UpdatePwd(newPwd string, proof string, mail string) (baseResponse *common.BaseResponse) {
 	baseResponse = new(common.BaseResponse)
 	baseResponse.Code = common.Success
-	ok, err := utils.ParseMailProof(proof, mail)
-	if err != nil {
-		log.Printf("Parse mail proof error: %v\n", err)
+	redisKey := resetKeyPreFix + mail
+	cacheInfo, err := dao.RedisDB.Get(context.Background(), redisKey).Result()
+	if err == redis.Nil {
+		baseResponse.Code = common.ProofInvalid
+		log.Printf("Reset Mail Proof Invalid")
+		return
+	} else if err != nil {
 		baseResponse.Code = common.ServerError
+		log.Printf("Redis get key error: %v\n", err)
 		return
 	}
+	ok := cacheInfo == proof
 	if !ok {
-		baseResponse.Code = common.Error
+		baseResponse.Code = common.ProofInvalid
 		return
 	}
 	teacher := new(models.Teacher)
@@ -125,5 +165,6 @@ func UpdatePwd(newPwd string, proof string, mail string) (baseResponse *common.B
 	if err = models.UpdateTeacher(&teacherList[0]); err != nil {
 		baseResponse.Code = common.ServerError
 	}
+	_ = redisDeleteKey(mail)
 	return
 }

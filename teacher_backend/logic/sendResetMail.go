@@ -4,14 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/nsqio/go-nsq"
-	"io/ioutil"
 	"log"
-	"os"
-	"path/filepath"
 	"snail/teacher_backend/common"
 	"snail/teacher_backend/settings"
 	"snail/teacher_backend/utils"
-	"strings"
 	"time"
 )
 
@@ -63,21 +59,8 @@ func InitResetPwdConsumer(cfg *settings.ResetPwdConsumerConfig) (err error) {
 }
 
 func genContent(proof string, mail string) (content string) {
-	basePath, err := os.Getwd()
-	if err != nil {
-		log.Printf("Reset mail base path error: %v\n", basePath)
-	}
-	fileName := filepath.Join(basePath, "statics", "template", "ResetMail.html")
-	log.Printf("file name: %v\n", fileName)
-	data, err := ioutil.ReadFile(fileName)
-	if err != nil {
-		log.Printf("read file error: %v\n", err)
-	}
-	content = string(data)
-	content = strings.Replace(content, "-workHost", settings.Conf.WorkHost, -1)
-	content = strings.Replace(content, "-workPort", settings.Conf.WorkPort, -1)
-	content = strings.Replace(content, "-mailString", mail, -1)
-	content = strings.Replace(content, "-proofString", proof, -1)
-	fmt.Printf("html content:\n%v", content)
+	url := fmt.Sprintf("http://%s:%d/teacherResetPwd?mail=%s?proof=%s", settings.Conf.WorkHost, settings.Conf.WorkPort, mail, proof)
+	fmt.Printf("Reset pwd url: %v", url)
+	content = fmt.Sprintf("<a href='%s' target='_blank'>请点击重置密码，有效期24小时</a>", url)
 	return
 }

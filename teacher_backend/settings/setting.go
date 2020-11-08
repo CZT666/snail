@@ -12,10 +12,12 @@ var Conf = new(Config)
 
 type Config struct {
 	WorkHost                string `yaml:"workHost"`
-	WorkPort                string `yaml:"workPort"`
+	WorkPort                int    `yaml:"workPort"`
 	*MySQLConfig            `yaml:"mysql"`
 	*NSQConfig              `yaml:"nsqProducer"`
 	*ResetPwdConsumerConfig `yaml:"nsqConsumer"`
+	*MailConfig             `yaml:"mail"`
+	*RedisConfig            `yaml:"redis"`
 }
 
 type MySQLConfig struct {
@@ -36,6 +38,20 @@ type ResetPwdConsumerConfig struct {
 	Channel string `yaml:"channel"`
 	Host    string `yaml:"host"`
 	Port    int    `yaml:"port"`
+}
+
+type MailConfig struct {
+	Account string `yaml:"account"`
+	Pwd     string `yaml:"pwd"`
+	Host    string `yaml:"host"`
+	Port    int    `yaml:"port"`
+}
+
+type RedisConfig struct {
+	Host     string `yaml:"host"`
+	Port     int    `yaml:"port"`
+	DB       int    `yaml:"db"`
+	PoolSize int    `yaml:"poolSize"`
 }
 
 func Init() {
