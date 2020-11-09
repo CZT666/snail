@@ -6,18 +6,12 @@ import (
 	"log"
 	"net"
 	"net/smtp"
-)
-
-const (
-	HOST     = "smtp.qq.com"
-	PORT     = 465
-	FROM     = "348673210@qq.com"
-	PASSWORD = "yczkpzjnnrsocbcf"
+	"snail/teacher_backend/settings"
 )
 
 func SendMail(toMail string, subject string, body string) error {
 	header := make(map[string]string)
-	header["From"] = "Snail<" + FROM + ">"
+	header["From"] = "Snail<" + settings.Conf.MailConfig.Account + ">"
 	header["To"] = toMail
 	header["Subject"] = subject
 	header["Content-type"] = "text/html; charset=UTF-8"
@@ -26,8 +20,8 @@ func SendMail(toMail string, subject string, body string) error {
 		message += fmt.Sprintf("%s: %s\r\n", key, value)
 	}
 	message += "\r\n" + body
-	auth := smtp.PlainAuth("", FROM, PASSWORD, HOST)
-	err := SendMailUsingTLS(fmt.Sprintf("%s:%d", HOST, PORT), auth, FROM, []string{toMail}, []byte(message))
+	auth := smtp.PlainAuth("", settings.Conf.MailConfig.Account, settings.Conf.MailConfig.Pwd, settings.Conf.MailConfig.Host)
+	err := SendMailUsingTLS(fmt.Sprintf("%s:%d", settings.Conf.MailConfig.Host, settings.Conf.MailConfig.Port), auth, settings.Conf.MailConfig.Account, []string{toMail}, []byte(message))
 	return err
 }
 
@@ -47,7 +41,7 @@ func SendMailUsingTLS(addr string, auth smtp.Auth, from string,
 	//create smtp client
 	c, err := Dial(addr)
 	if err != nil {
-		log.Println("Create smpt client error:", err)
+		log.Println("Create smtp client error:", err)
 		return err
 	}
 	defer c.Close()

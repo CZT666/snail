@@ -19,6 +19,11 @@ const (
 		服务器错误
 	*/
 	ServerError = "-1000"
+
+	/*
+		重置密码错误
+	*/
+	ProofInvalid = "-5000"
 )
 
 type BaseResponse struct {
