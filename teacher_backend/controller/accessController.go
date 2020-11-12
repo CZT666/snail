@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 	"snail/teacher_backend/common"
 	"snail/teacher_backend/logic"
@@ -11,10 +12,11 @@ import (
 )
 
 // TODO 邮箱校验
+// TODO 密码加密
 func TeacherRegister(c *gin.Context) {
 	teacher := new(models.Teacher)
 	if err := c.BindJSON(&teacher); err != nil {
-		fmt.Printf("Teacher register error: %v\n", err)
+		log.Printf("Teacher register bind json error: %v\n", err)
 		c.JSON(http.StatusOK, common.BadResponse(common.ParamError))
 		return
 	}

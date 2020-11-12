@@ -6,8 +6,8 @@ import (
 )
 
 func accessGroup(engine *gin.Engine) {
-	engine.POST("/teacher/register", controller.TeacherRegister)
-	engine.GET("/teacher/login", controller.TeacherLogin)
-	engine.GET("/teacher/resetPwd/:mail", controller.ResetPwdReq)
-	engine.POST("/teacher/resetPwd", controller.UpdatePwd)
+	engine.POST("/register", controller.TeacherRegister)
+	engine.GET("/login", controller.TeacherLogin)
+	engine.GET("/resetPwd/:mail", controller.ResetPwdReq)
+	engine.POST("/resetPwd", controller.UpdatePwd)
 }

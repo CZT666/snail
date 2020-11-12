@@ -1,9 +1,14 @@
 package utils
 
 import (
+	"bytes"
+	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/dgrijalva/jwt-go"
+	"reflect"
 	"snail/teacher_backend/models"
+	"snail/teacher_backend/models/interfaces"
 	"snail/teacher_backend/vo"
 	"time"
 )
@@ -15,9 +20,9 @@ const (
 
 var TokenSecret = []byte("snail")
 
-func GenTeacherToken(teacher *models.Teacher, userType int) (string, error) {
+func GenToken(user interface{}, userType int) (string, error) {
 	info := new(vo.Token)
-	info.Teacher = teacher
+	info.User = user
 	info.Type = userType
 	return genToken(info)
 }
@@ -40,4 +45,46 @@ func ParseToken(tokenString string) (*vo.Token, error) {
 		return user, nil
 	}
 	return nil, errors.New("invalid token")
+}
+
+func GetToken(org interface{}) (user interfaces.User, err error) {
+	//t := reflect.TypeOf(org)
+	v := reflect.ValueOf(org)
+	typeValue := v.Elem().FieldByName("Type").Int()
+	userIno := v.Elem().FieldByName("User").Interface()
+	jsonString := genJson(userIno)
+	if typeValue == 1 {
+		teacher := new(models.Teacher)
+		err = json.Unmarshal([]byte(jsonString), &teacher)
+		user = teacher
+	} else {
+		// TODO 修改assistance
+		assistance := new(models.Teacher)
+		err = json.Unmarshal([]byte(jsonString), &assistance)
+		user = assistance
+	}
+	return
+}
+
+func genJson(x interface{}) string {
+	v := reflect.ValueOf(x)
+	stringBuffer := new(bytes.Buffer)
+	stringBuffer.WriteString("{")
+	for index, val := range v.MapKeys() {
+		stringBuffer.WriteString("\"")
+		stringBuffer.WriteString(val.String())
+		stringBuffer.WriteString("\":")
+		if v.MapIndex(val).Elem().Kind() == reflect.Float64 {
+			stringBuffer.WriteString(fmt.Sprintf("%v", v.MapIndex(val).Elem().Float()))
+		} else {
+			stringBuffer.WriteString("\"")
+			stringBuffer.WriteString(fmt.Sprintf("%v", v.MapIndex(val)))
+			stringBuffer.WriteString("\"")
+		}
+		if index != len(v.MapKeys())-1 {
+			stringBuffer.WriteString(",")
+		}
+	}
+	stringBuffer.WriteString("}")
+	return stringBuffer.String()
 }

@@ -5,12 +5,10 @@ import (
 	"net/http"
 	"snail/teacher_backend/common"
 	"snail/teacher_backend/utils"
-	"strings"
 )
 
 const (
 	AUTHORIZATION = "Authorization"
-	BEARER        = "Bearer"
 )
 
 func JWTAuthMiddleware() func(c *gin.Context) {
@@ -24,18 +22,7 @@ func JWTAuthMiddleware() func(c *gin.Context) {
 			return
 		}
 
-		// 按空格分割
-		parts := strings.SplitN(authHeader, " ", 2)
-		if !(len(parts) == 2 && parts[0] == BEARER) {
-			baseResponse := new(common.BaseResponse)
-			baseResponse.Code = common.AuthFormatError
-			c.JSON(http.StatusOK, baseResponse)
-			c.Abort()
-			return
-		}
-
-		// parts[1]是获取到的tokenString，我们使用之前定义好的解析JWT的函数来解析它
-		mc, err := utils.ParseToken(parts[1])
+		mc, err := utils.ParseToken(authHeader)
 		if err != nil {
 			baseResponse := new(common.BaseResponse)
 			baseResponse.Code = common.InvalidToken

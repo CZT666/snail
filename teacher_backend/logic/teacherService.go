@@ -27,10 +27,12 @@ func AddTeacher(teacher *models.Teacher) (baseResponse *common.BaseResponse) {
 	}
 	if err := models.CreateTeacher(teacher); err != nil {
 		baseResponse.Code = common.Error
+		log.Printf("Teacher service create teacher failed: %v\n", err)
 	}
 	return
 }
 
+// TODO 助教登录
 func TeacherLogin(user *vo.LoginRequest) (baseResponse *common.BaseResponse) {
 	baseResponse = new(common.BaseResponse)
 	baseResponse.Code = common.Success
@@ -38,7 +40,7 @@ func TeacherLogin(user *vo.LoginRequest) (baseResponse *common.BaseResponse) {
 	pwd := user.Pwd
 	teacher, ok := isTeacher(mail, pwd)
 	if ok {
-		tokenString, err := utils.GenTeacherToken(teacher, 0)
+		tokenString, err := utils.GenToken(teacher, 1)
 		if err != nil {
 			fmt.Printf("Generate token error: %v\n", err)
 			baseResponse.Code = common.TokenError
