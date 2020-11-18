@@ -58,8 +58,7 @@ func GetToken(org interface{}) (user interfaces.User, err error) {
 		err = json.Unmarshal([]byte(jsonString), &teacher)
 		user = teacher
 	} else {
-		// TODO 修改assistance
-		assistance := new(models.Teacher)
+		assistance := new(models.Student)
 		err = json.Unmarshal([]byte(jsonString), &assistance)
 		user = assistance
 	}

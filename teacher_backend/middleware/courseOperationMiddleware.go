@@ -20,7 +20,6 @@ func CourseOperationMiddleware() func(c *gin.Context) {
 			return
 		}
 		org, _ := c.Get("user")
-		// TODO 助教
 		user, err := utils.GetToken(org)
 		if err != nil {
 			log.Printf("Get token failed: %v\n", err)
@@ -39,12 +38,32 @@ func CourseOperationMiddleware() func(c *gin.Context) {
 			}
 			// 课程不存在或者无权限
 			if tmp.SearchCode == "" || tmp.CreateBy != user.GetIdentity() {
-				log.Printf("User has no access right to the course or course no exist: %v\n", course.ID)
+				log.Printf("User: %v has no access right to the course %v or course no exist.\n", user.GetIdentity(), course.ID)
 				c.JSON(http.StatusOK, common.BadResponse(common.Error))
 				c.Abort()
 				return
 			}
+			c.Next()
+		} else {
+			tmp := new(models.Assistance)
+			tmp.StuID = user.GetIdentity()
+			assistanceList, err := models.GetAssistance(tmp)
+			if err != nil {
+				log.Printf("Course operation middle ware get assistance failed: %v\n", err)
+				c.JSON(http.StatusOK, common.BadResponse(common.ServerError))
+				c.Abort()
+				return
+			}
+			for _, assistance := range assistanceList {
+				if assistance.CourseID == course.ID {
+					c.Next()
+					return
+				}
+			}
+			log.Printf("User: %v has no access right to the course %v or course no exist.\n", user.GetIdentity(), course.ID)
+			c.JSON(http.StatusOK, common.BadResponse(common.Error))
+			c.Abort()
+			return
 		}
-		c.Next()
 	}
 }
