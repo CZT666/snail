@@ -22,7 +22,7 @@ func AddCourse(c *gin.Context) {
 	org, _ := c.Get("user")
 	user, err := utils.GetToken(org)
 	if err != nil {
-		log.Printf("Get token failed: %v\n", err)
+		log.Printf("Course controller get token failed: %v\n", err)
 		c.JSON(http.StatusOK, common.BadResponse(common.ServerError))
 		return
 	}

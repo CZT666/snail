@@ -27,19 +27,21 @@ func AddTeacher(teacher *models.Teacher) (baseResponse *common.BaseResponse) {
 	}
 	if err := models.CreateTeacher(teacher); err != nil {
 		baseResponse.Code = common.Error
+		baseResponse.Msg = "添加失败"
 		log.Printf("Teacher service create teacher failed: %v\n", err)
 	}
 	return
 }
 
-// TODO 助教登录
 func TeacherLogin(user *vo.LoginRequest) (baseResponse *common.BaseResponse) {
 	baseResponse = new(common.BaseResponse)
 	baseResponse.Code = common.Success
-	mail := user.Account
+	account := user.Account
 	pwd := user.Pwd
-	teacher, ok := isTeacher(mail, pwd)
+	log.Printf("account: %v pwd: %v\n", account, pwd)
+	teacher, ok := isTeacher(account, pwd)
 	if ok {
+		log.Printf("Teacher login: %v\n", account)
 		tokenString, err := utils.GenToken(teacher, 1)
 		if err != nil {
 			fmt.Printf("Generate token error: %v\n", err)
@@ -48,7 +50,22 @@ func TeacherLogin(user *vo.LoginRequest) (baseResponse *common.BaseResponse) {
 		}
 		baseResponse.Data = tokenString
 		return
+	} else {
+		student, ok := isAssistance(account, pwd)
+		if ok {
+			log.Printf("Assistance login: %v\n", account)
+			tokenString, err := utils.GenToken(student, 2)
+			if err != nil {
+				fmt.Printf("Generate token error: %v\n", err)
+				baseResponse.Code = common.TokenError
+				return
+			}
+			baseResponse.Data = tokenString
+			return
+		}
 	}
+	baseResponse.Code = common.Error
+	baseResponse.Code = "账号或密码错误"
 	return
 }
 
@@ -66,6 +83,28 @@ func isTeacher(mail string, pwd string) (user *models.Teacher, ok bool) {
 	} else {
 		return &models.Teacher{}, false
 	}
+}
+
+func isAssistance(studentID string, pwd string) (user *models.Student, ok bool) {
+	assistance := new(models.Assistance)
+	assistance.StuID = studentID
+	assistanceList, err := models.GetAssistance(assistance)
+	if err != nil {
+		log.Printf("Teacher service get assistance failed: %v\n", err)
+		return nil, false
+	}
+	if len(assistanceList) < 1 {
+		log.Printf("User Invalid")
+		return nil, false
+	}
+	student := new(models.Student)
+	student.StudentID = studentID
+	student.Pwd = pwd
+	if err = models.GetSingleStudent(student); err != nil {
+		log.Printf("Teacher service get single student failed: %v\n", err)
+		return nil, false
+	}
+	return student, true
 }
 
 func isMailExist(mail string) bool {
@@ -161,6 +200,7 @@ func UpdatePwd(newPwd string, proof string, mail string) (baseResponse *common.B
 	teacherList, err := models.GetTeacher(teacher)
 	if len(teacherList) != 1 {
 		baseResponse.Code = common.Error
+		baseResponse.Msg = "用户不存在"
 		return
 	}
 	teacherList[0].Pwd = newPwd

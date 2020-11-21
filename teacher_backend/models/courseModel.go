@@ -38,8 +38,15 @@ func GetCourse(course *Course, pageRequest *vo.PageRequest) (courseList []Course
 }
 
 func GetSingleCourse(course *Course) (err error) {
-	if err = dao.DB.Where(&course).First(&course).Error; err != nil {
-		return err
+	err = dao.DB.Where(&course).First(&course).Error
+	return
+}
+
+func GetCourseByID(idList []int, pageRequest *vo.PageRequest) (courseList []Course, total int, err error) {
+	page := pageRequest.Page
+	pageSize := pageRequest.PageSize
+	if err := dao.DB.Where("id in (?)", idList).Limit(pageSize).Offset((page - 1) * pageSize).Find(&courseList).Count(&total).Error; err != nil {
+		return nil, 0, err
 	}
 	return
 }

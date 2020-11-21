@@ -11,4 +11,6 @@ func SetupRouter() (engine *gin.Engine) {
 func addHandler(engine *gin.Engine) {
 	accessGroup(engine)
 	courseGroup(engine)
+	AssistanceGroup(engine)
+	blogGroup(engine)
 }
