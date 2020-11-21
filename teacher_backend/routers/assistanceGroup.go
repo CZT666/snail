@@ -7,9 +7,11 @@ import (
 )
 
 func AssistanceGroup(engine *gin.Engine) {
+	courseID := "course_id"
 	group := engine.Group("/assistance")
 	group.Use(middleware.JWTAuthMiddleware())
 	{
-		group.POST("/add", middleware.CourseOperationMiddleware(), controller.AddAssistance)
+		group.POST("/add", middleware.CourseOperationMiddleware(courseID, false), controller.AddAssistance)
+		group.POST("/delete", middleware.CourseOperationMiddleware(courseID, false), controller.DeleteAssistance)
 	}
 }

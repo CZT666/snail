@@ -21,6 +21,7 @@ func AddCourse(course *models.Course, user interfaces.User) (baseResponse *commo
 	course.CreateTime = time.Now()
 	if err := models.CreateCourse(course); err != nil {
 		baseResponse.Code = common.Error
+		baseResponse.Msg = "添加失败"
 		log.Printf("Course service create course failed: %v\n", err)
 		return
 	}

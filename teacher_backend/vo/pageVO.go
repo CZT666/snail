@@ -13,7 +13,7 @@ type PageResponse struct {
 func NewPageRequest() (pageRequest *PageRequest) {
 	pageRequest = new(PageRequest)
 	pageRequest.Page = -1
-	pageRequest.Page = -1
+	pageRequest.PageSize = 1
 	return
 }
 

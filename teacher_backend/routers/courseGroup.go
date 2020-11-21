@@ -7,13 +7,14 @@ import (
 )
 
 func courseGroup(engine *gin.Engine) {
+	courseID := "id"
 	group := engine.Group("/course")
 	group.Use(middleware.JWTAuthMiddleware())
 	{
 		group.POST("/add", controller.AddCourse)
 		group.GET("/list", controller.QueryCourseList)
-		group.GET("/detail", middleware.CourseOperationMiddleware(), controller.QueryCourseDetail)
-		group.POST("/update", middleware.CourseOperationMiddleware(), controller.UpdateCourse)
-		group.POST("/delete", middleware.CourseOperationMiddleware(), controller.DeleteCourse)
+		group.GET("/detail", middleware.CourseOperationMiddleware(courseID, true), controller.QueryCourseDetail)
+		group.POST("/update", middleware.CourseOperationMiddleware(courseID, false), controller.UpdateCourse)
+		group.POST("/delete", middleware.CourseOperationMiddleware(courseID, false), controller.DeleteCourse)
 	}
 }

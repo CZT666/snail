@@ -27,6 +27,7 @@ func AddTeacher(teacher *models.Teacher) (baseResponse *common.BaseResponse) {
 	}
 	if err := models.CreateTeacher(teacher); err != nil {
 		baseResponse.Code = common.Error
+		baseResponse.Msg = "添加失败"
 		log.Printf("Teacher service create teacher failed: %v\n", err)
 	}
 	return
@@ -64,6 +65,7 @@ func TeacherLogin(user *vo.LoginRequest) (baseResponse *common.BaseResponse) {
 		}
 	}
 	baseResponse.Code = common.Error
+	baseResponse.Code = "账号或密码错误"
 	return
 }
 
@@ -198,6 +200,7 @@ func UpdatePwd(newPwd string, proof string, mail string) (baseResponse *common.B
 	teacherList, err := models.GetTeacher(teacher)
 	if len(teacherList) != 1 {
 		baseResponse.Code = common.Error
+		baseResponse.Msg = "用户不存在"
 		return
 	}
 	teacherList[0].Pwd = newPwd

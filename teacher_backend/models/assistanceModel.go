@@ -7,7 +7,7 @@ import (
 
 type Assistance struct {
 	StuID       string    `json:"stu_id"`
-	CourseID    int       `json:"id"`
+	CourseID    int       `json:"course_id"`
 	ExpiredTime time.Time `json:"expired_time"`
 }
 
@@ -24,6 +24,6 @@ func GetAssistance(assistance *Assistance) (assistanceList []Assistance, err err
 }
 
 func DeleteAssistance(assistance *Assistance) (err error) {
-	err = dao.DB.Delete(&assistance).Error
+	err = dao.DB.Where("stu_id = ? and course_id = ?", assistance.StuID, assistance.CourseID).Delete(&Assistance{}).Error
 	return
 }
