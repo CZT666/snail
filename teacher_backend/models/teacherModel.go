@@ -16,6 +16,18 @@ type Teacher struct {
 	SocialAccounts string `json:"social_accounts"`
 }
 
+func (t Teacher) GetIdentity() string {
+	return t.Mail
+}
+
+func (t Teacher) GetName() string {
+	return t.Name
+}
+
+func (t Teacher) GetType() int {
+	return 1
+}
+
 func CreateTeacher(teacher *Teacher) (err error) {
 	err = dao.DB.Create(&teacher).Error
 	return

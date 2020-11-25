@@ -2,7 +2,6 @@ package vo
 
 import (
 	"github.com/dgrijalva/jwt-go"
-	"snail/teacher_backend/models"
 )
 
 type LoginRequest struct {
@@ -11,8 +10,7 @@ type LoginRequest struct {
 }
 
 type Token struct {
-	Type      int             `json:"type"`
-	Teacher   *models.Teacher `json:"teacher"`
-	Assistant *models.Teacher `json:"assistant"`
+	Type int         `json:"type"`
+	User interface{} `json:"user"`
 	jwt.StandardClaims
 }

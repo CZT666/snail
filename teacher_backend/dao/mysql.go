@@ -19,6 +19,7 @@ func InitMySQL(cfg *settings.MySQLConfig) (err error) {
 		fmt.Printf("connect mysql failed: %v", err.Error())
 		return err
 	}
+	DB.LogMode(true)
 	return DB.DB().Ping()
 }
 
