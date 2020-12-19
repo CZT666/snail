@@ -5,7 +5,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
-	"snail/teacher_backend/common"
 	"snail/teacher_backend/logic"
 	"snail/teacher_backend/models"
 	"snail/teacher_backend/vo"
@@ -17,7 +16,7 @@ func TeacherRegister(c *gin.Context) {
 	teacher := new(models.Teacher)
 	if err := c.BindJSON(&teacher); err != nil {
 		log.Printf("Teacher register bind json error: %v\n", err)
-		c.JSON(http.StatusOK, common.BadResponse(common.ParamError))
+		c.JSON(http.StatusOK, vo.BadResponse(vo.ParamError))
 		return
 	}
 	baseResponse := logic.AddTeacher(teacher)
@@ -29,7 +28,7 @@ func TeacherLogin(c *gin.Context) {
 	user := new(vo.LoginRequest)
 	if err := c.BindJSON(&user); err != nil {
 		fmt.Printf("Teacher login error: %v\n", err)
-		c.JSON(http.StatusOK, common.BadResponse(common.ParamError))
+		c.JSON(http.StatusOK, vo.BadResponse(vo.ParamError))
 		return
 	}
 	baseResponse := logic.TeacherLogin(user)

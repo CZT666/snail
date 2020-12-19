@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/go-redis/redis"
 	"log"
-	"snail/teacher_backend/common"
 	"snail/teacher_backend/dao"
 	"snail/teacher_backend/models"
 	"snail/teacher_backend/utils"
@@ -18,24 +17,24 @@ const (
 	resetKeyPreFix = "mail.reset."
 )
 
-func AddTeacher(teacher *models.Teacher) (baseResponse *common.BaseResponse) {
-	baseResponse = new(common.BaseResponse)
-	baseResponse.Code = common.Success
+func AddTeacher(teacher *models.Teacher) (baseResponse *vo.BaseResponse) {
+	baseResponse = new(vo.BaseResponse)
+	baseResponse.Code = vo.Success
 	if isMailExist(teacher.Mail) {
-		baseResponse.Code = common.AccountExist
+		baseResponse.Code = vo.AccountExist
 		return
 	}
 	if err := models.CreateTeacher(teacher); err != nil {
-		baseResponse.Code = common.Error
+		baseResponse.Code = vo.Error
 		baseResponse.Msg = "添加失败"
 		log.Printf("Teacher service create teacher failed: %v\n", err)
 	}
 	return
 }
 
-func TeacherLogin(user *vo.LoginRequest) (baseResponse *common.BaseResponse) {
-	baseResponse = new(common.BaseResponse)
-	baseResponse.Code = common.Success
+func TeacherLogin(user *vo.LoginRequest) (baseResponse *vo.BaseResponse) {
+	baseResponse = new(vo.BaseResponse)
+	baseResponse.Code = vo.Success
 	account := user.Account
 	pwd := user.Pwd
 	log.Printf("account: %v pwd: %v\n", account, pwd)
@@ -45,7 +44,7 @@ func TeacherLogin(user *vo.LoginRequest) (baseResponse *common.BaseResponse) {
 		tokenString, err := utils.GenToken(teacher, 1)
 		if err != nil {
 			fmt.Printf("Generate token error: %v\n", err)
-			baseResponse.Code = common.TokenError
+			baseResponse.Code = vo.TokenError
 			return
 		}
 		baseResponse.Data = tokenString
@@ -57,14 +56,14 @@ func TeacherLogin(user *vo.LoginRequest) (baseResponse *common.BaseResponse) {
 			tokenString, err := utils.GenToken(student, 2)
 			if err != nil {
 				fmt.Printf("Generate token error: %v\n", err)
-				baseResponse.Code = common.TokenError
+				baseResponse.Code = vo.TokenError
 				return
 			}
 			baseResponse.Data = tokenString
 			return
 		}
 	}
-	baseResponse.Code = common.Error
+	baseResponse.Code = vo.Error
 	baseResponse.Code = "账号或密码错误"
 	return
 }
@@ -118,24 +117,24 @@ func isMailExist(mail string) bool {
 	return len(teacherList) > 0
 }
 
-func ResetPwdReq(mail string) (baseResponse *common.BaseResponse) {
-	baseResponse = new(common.BaseResponse)
-	baseResponse.Code = common.Success
+func ResetPwdReq(mail string) (baseResponse *vo.BaseResponse) {
+	baseResponse = new(vo.BaseResponse)
+	baseResponse.Code = vo.Success
 	if !isMailExist(mail) {
-		baseResponse.Code = common.MailNotExist
+		baseResponse.Code = vo.MailNotExist
 		log.Printf("Mail already exists: %v\n", mail)
 		return
 	}
 	proofString, err := utils.GenResetProof(mail)
 	if err != nil {
-		baseResponse.Code = common.ServerError
+		baseResponse.Code = vo.ServerError
 		log.Printf("Generate mail proof failed: %v\n", err)
 		return
 	}
 	// 将邮箱写入redis
 	err = addResetReqToRedis(mail, proofString)
 	if err != nil {
-		baseResponse.Code = common.ServerError
+		baseResponse.Code = vo.ServerError
 		log.Printf("Add reset req into redis failed: %v\n", err)
 		return
 	}
@@ -148,13 +147,13 @@ func ResetPwdReq(mail string) (baseResponse *common.BaseResponse) {
 		if err != nil {
 			log.Printf("Mail reset req redis rollback failed: %v\n", err)
 		}
-		baseResponse.Code = common.ServerError
+		baseResponse.Code = vo.ServerError
 	}
 	return
 }
 
 func sendResetReqToNSQ(mail string, proof string) error {
-	req := &common.ResetPwdRequest{
+	req := &vo.ResetPwdRequest{
 		Mail:  mail,
 		Proof: proof,
 	}
@@ -176,36 +175,36 @@ func redisDeleteKey(mail string) error {
 	return err
 }
 
-func UpdatePwd(newPwd string, proof string, mail string) (baseResponse *common.BaseResponse) {
-	baseResponse = new(common.BaseResponse)
-	baseResponse.Code = common.Success
+func UpdatePwd(newPwd string, proof string, mail string) (baseResponse *vo.BaseResponse) {
+	baseResponse = new(vo.BaseResponse)
+	baseResponse.Code = vo.Success
 	redisKey := resetKeyPreFix + mail
 	cacheInfo, err := dao.RedisDB.Get(context.Background(), redisKey).Result()
 	if err == redis.Nil {
-		baseResponse.Code = common.ProofInvalid
+		baseResponse.Code = vo.ProofInvalid
 		log.Printf("Reset Mail Proof Invalid")
 		return
 	} else if err != nil {
-		baseResponse.Code = common.ServerError
+		baseResponse.Code = vo.ServerError
 		log.Printf("Redis get key error: %v\n", err)
 		return
 	}
 	ok := cacheInfo == proof
 	if !ok {
-		baseResponse.Code = common.ProofInvalid
+		baseResponse.Code = vo.ProofInvalid
 		return
 	}
 	teacher := new(models.Teacher)
 	teacher.Mail = mail
 	teacherList, err := models.GetTeacher(teacher)
 	if len(teacherList) != 1 {
-		baseResponse.Code = common.Error
+		baseResponse.Code = vo.Error
 		baseResponse.Msg = "用户不存在"
 		return
 	}
 	teacherList[0].Pwd = newPwd
 	if err = models.UpdateTeacher(&teacherList[0]); err != nil {
-		baseResponse.Code = common.ServerError
+		baseResponse.Code = vo.ServerError
 	}
 	_ = redisDeleteKey(mail)
 	return

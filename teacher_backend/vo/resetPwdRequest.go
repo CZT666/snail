@@ -1,4 +1,4 @@
-package common
+package vo
 
 type ResetPwdRequest struct {
 	Mail  string `json:"mail"`

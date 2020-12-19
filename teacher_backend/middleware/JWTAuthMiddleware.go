@@ -3,8 +3,8 @@ package middleware
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"snail/teacher_backend/common"
 	"snail/teacher_backend/utils"
+	"snail/teacher_backend/vo"
 )
 
 const (
@@ -15,8 +15,8 @@ func JWTAuthMiddleware() func(c *gin.Context) {
 	return func(c *gin.Context) {
 		authHeader := c.Request.Header.Get(AUTHORIZATION)
 		if authHeader == "" {
-			baseResponse := new(common.BaseResponse)
-			baseResponse.Code = common.AuthBlank
+			baseResponse := new(vo.BaseResponse)
+			baseResponse.Code = vo.AuthBlank
 			c.JSON(http.StatusOK, baseResponse)
 			c.Abort()
 			return
@@ -24,8 +24,8 @@ func JWTAuthMiddleware() func(c *gin.Context) {
 
 		mc, err := utils.ParseToken(authHeader)
 		if err != nil {
-			baseResponse := new(common.BaseResponse)
-			baseResponse.Code = common.InvalidToken
+			baseResponse := new(vo.BaseResponse)
+			baseResponse.Code = vo.InvalidToken
 			c.JSON(http.StatusOK, baseResponse)
 			c.Abort()
 			return
