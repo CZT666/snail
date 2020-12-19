@@ -2,27 +2,27 @@ package logic
 
 import (
 	"log"
-	"snail/teacher_backend/common"
 	"snail/teacher_backend/models"
+	"snail/teacher_backend/vo"
 )
 
 // TODO 助教无权限
-func AddAssistance(assistance *models.Assistance) (baseResponse *common.BaseResponse) {
-	baseResponse = new(common.BaseResponse)
-	baseResponse.Code = common.Success
+func AddAssistance(assistance *models.Assistance) (baseResponse *vo.BaseResponse) {
+	baseResponse = new(vo.BaseResponse)
+	baseResponse.Code = vo.Success
 	if isStudent(assistance.StuID) {
 		if isAssistanceExist(assistance.StuID, assistance.CourseID) {
 			log.Printf("Assistance exist.")
-			baseResponse.Code = common.Error
+			baseResponse.Code = vo.Error
 			baseResponse.Msg = "该学生已是课程助教"
 			return
 		}
 		if err := models.CreateAssistance(assistance); err != nil {
 			log.Printf("Assistance Server create assistance failed: %v\n", err)
-			baseResponse.Code = common.ServerError
+			baseResponse.Code = vo.ServerError
 		}
 	} else {
-		baseResponse.Code = common.Error
+		baseResponse.Code = vo.Error
 		baseResponse.Msg = "添加助教失败"
 	}
 	return
@@ -55,12 +55,12 @@ func isAssistanceExist(stuID string, courseID int) bool {
 	return len(assistanceList) != 0
 }
 
-func DeleteAssistance(assistance *models.Assistance) (baseResponse *common.BaseResponse) {
-	baseResponse = new(common.BaseResponse)
-	baseResponse.Code = common.Success
+func DeleteAssistance(assistance *models.Assistance) (baseResponse *vo.BaseResponse) {
+	baseResponse = new(vo.BaseResponse)
+	baseResponse.Code = vo.Success
 	if err := models.DeleteAssistance(assistance); err != nil {
 		log.Printf("Assistance service delete assistance failed: %v\n", err)
-		baseResponse.Code = common.Error
+		baseResponse.Code = vo.Error
 		baseResponse.Msg = "删除失败"
 	}
 	return baseResponse

@@ -2,7 +2,7 @@ package models
 
 import (
 	"snail/teacher_backend/dao"
-	"snail/teacher_backend/vo"
+	"snail/teacher_backend/models/helper"
 	"time"
 )
 
@@ -28,7 +28,7 @@ func UpdateCourse(course *Course) (err error) {
 	return
 }
 
-func GetCourse(course *Course, pageRequest *vo.PageRequest) (courseList []Course, total int, err error) {
+func GetCourse(course *Course, pageRequest *helper.PageRequest) (courseList []Course, total int, err error) {
 	page := pageRequest.Page
 	pageSize := pageRequest.PageSize
 	if err = dao.DB.Where(&course).Limit(pageSize).Offset((page - 1) * pageSize).Find(&courseList).Count(&total).Error; err != nil {
@@ -42,7 +42,7 @@ func GetSingleCourse(course *Course) (err error) {
 	return
 }
 
-func GetCourseByID(idList []int, pageRequest *vo.PageRequest) (courseList []Course, total int, err error) {
+func GetCourseByID(idList []int, pageRequest *helper.PageRequest) (courseList []Course, total int, err error) {
 	page := pageRequest.Page
 	pageSize := pageRequest.PageSize
 	if err := dao.DB.Where("id in (?)", idList).Limit(pageSize).Offset((page - 1) * pageSize).Find(&courseList).Count(&total).Error; err != nil {

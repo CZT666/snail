@@ -2,7 +2,7 @@ package models
 
 import (
 	"snail/teacher_backend/dao"
-	"snail/teacher_backend/vo"
+	"snail/teacher_backend/models/helper"
 	"time"
 )
 
@@ -23,7 +23,7 @@ func CreateBlog(blog *Blog) (err error) {
 	return
 }
 
-func GetBlog(blog *Blog, request *vo.PageRequest) (blogList []Blog, total int, err error) {
+func GetBlog(blog *Blog, request *helper.PageRequest) (blogList []Blog, total int, err error) {
 	page := request.Page
 	pageSize := request.PageSize
 	if err := dao.DB.Where(&blog).Limit(pageSize).Offset((page - 1) * pageSize).Find(&blogList).Count(&total).Error; err != nil {

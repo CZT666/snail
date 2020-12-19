@@ -1,4 +1,4 @@
-package common
+package vo
 
 const (
 	Success      = "0"
