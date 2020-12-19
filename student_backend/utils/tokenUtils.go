@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"reflect"
+	"student_bakcend/common"
 	"student_bakcend/models"
 	"time"
 )
@@ -19,26 +20,26 @@ const (
 var TokenSecret = []byte("snail")
 
 func GenToken(student *models.Student) (string, error) {
-	info := new(models.Token)
+	info := new(common.Token)
 	info.Student = *student
 	return genToken(info)
 }
 
-func genToken(info *models.Token) (string, error) {
+func genToken(info *common.Token) (string, error) {
 	info.ExpiresAt = time.Now().Add(TokenExpireDuration).Unix()
 	info.Issuer = Signature
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, info)
 	return token.SignedString(TokenSecret)
 }
 
-func ParseToken(tokenString string) (*models.Token, error) {
-	token, err := jwt.ParseWithClaims(tokenString, &models.Token{}, func(token *jwt.Token) (interface{}, error) {
+func ParseToken(tokenString string) (*common.Token, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &common.Token{}, func(token *jwt.Token) (interface{}, error) {
 		return TokenSecret, nil
 	})
 	if err != nil {
 		return nil, err
 	}
-	if user, ok := token.Claims.(*models.Token); ok && token.Valid {
+	if user, ok := token.Claims.(*common.Token); ok && token.Valid {
 		return user, nil
 	}
 	return nil, errors.New("invalid token")

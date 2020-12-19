@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
-	"student_bakcend/common"
+	"student_bakcend/vo"
 	"student_bakcend/logic"
 	"student_bakcend/models"
 )
@@ -16,7 +16,7 @@ func StudentRegister(c *gin.Context) {
 	student := new(models.Student)
 	if err := c.BindJSON(&student); err != nil {
 		log.Printf("Student register bind json error: %v\n", err)
-		c.JSON(http.StatusOK, common.BadResponse(common.ParamError))
+		c.JSON(http.StatusOK, vo.BadResponse(vo.ParamError))
 		return
 	}
 	baseResponse := logic.AddStudent(student)
@@ -28,7 +28,7 @@ func StudentLogin(c *gin.Context) {
 	student := new(models.Student)
 	if err := c.BindJSON(&student); err != nil {
 		fmt.Printf("Student login error: %v\n", err)
-		c.JSON(http.StatusOK, common.BadResponse(common.ParamError))
+		c.JSON(http.StatusOK, vo.BadResponse(vo.ParamError))
 		return
 	}
 	baseResponse := logic.StudentLogin(student)
