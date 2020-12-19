@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"github.com/nsqio/go-nsq"
 	"log"
-	"snail/teacher_backend/common"
 	"snail/teacher_backend/settings"
 	"snail/teacher_backend/utils"
+	"snail/teacher_backend/vo"
 	"time"
 )
 
@@ -20,7 +20,7 @@ type MyHandler struct {
 }
 
 func (myHandler *MyHandler) HandleMessage(msg *nsq.Message) (err error) {
-	request := new(common.ResetPwdRequest)
+	request := new(vo.ResetPwdRequest)
 	err = json.Unmarshal(msg.Body, &request)
 	if err != nil {
 		return
@@ -31,7 +31,7 @@ func (myHandler *MyHandler) HandleMessage(msg *nsq.Message) (err error) {
 	return
 }
 
-func sendResetMail(request *common.ResetPwdRequest) error {
+func sendResetMail(request *vo.ResetPwdRequest) error {
 	mail := request.Mail
 	proof := request.Proof
 	err := utils.SendMail(mail, resetSubject, genContent(proof, mail))

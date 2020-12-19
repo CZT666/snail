@@ -6,9 +6,9 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"snail/teacher_backend/common"
 	"snail/teacher_backend/models"
 	"snail/teacher_backend/utils"
+	"snail/teacher_backend/vo"
 	"strconv"
 )
 
@@ -17,7 +17,7 @@ func CourseOperationMiddleware(idKey string, readOnly bool) func(c *gin.Context)
 		courseID, err := getCourseID(c, idKey)
 		if err != nil {
 			log.Printf("Course operation middle ware get course id failed: %v\n", err)
-			c.JSON(http.StatusOK, common.BadResponse(common.ParamError))
+			c.JSON(http.StatusOK, vo.BadResponse(vo.ParamError))
 			c.Abort()
 			return
 		}
@@ -29,7 +29,7 @@ func CourseOperationMiddleware(idKey string, readOnly bool) func(c *gin.Context)
 		user, err := utils.GetToken(org)
 		if err != nil {
 			log.Printf("Get token failed: %v\n", err)
-			c.JSON(http.StatusOK, common.BadResponse(common.ServerError))
+			c.JSON(http.StatusOK, vo.BadResponse(vo.ServerError))
 			c.Abort()
 			return
 		}
@@ -39,14 +39,14 @@ func CourseOperationMiddleware(idKey string, readOnly bool) func(c *gin.Context)
 			tmp.ID = courseID
 			if err = models.GetSingleCourse(tmp); err != nil {
 				log.Printf("Course operation middle ware get single course failed: %v\n", err)
-				c.JSON(http.StatusOK, common.BadResponse(common.ServerError))
+				c.JSON(http.StatusOK, vo.BadResponse(vo.ServerError))
 				c.Abort()
 				return
 			}
 			// 课程不存在或者无权限
 			if tmp.SearchCode == "" || tmp.CreateBy != user.GetIdentity() {
 				log.Printf("User: %v has no access right to the course %v or course no exist.\n", user.GetIdentity(), courseID)
-				c.JSON(http.StatusOK, common.BadResponse(common.Error))
+				c.JSON(http.StatusOK, vo.BadResponse(vo.Error))
 				c.Abort()
 				return
 			}
@@ -57,7 +57,7 @@ func CourseOperationMiddleware(idKey string, readOnly bool) func(c *gin.Context)
 			assistanceList, err := models.GetAssistance(tmp)
 			if err != nil {
 				log.Printf("Course operation middle ware get assistance failed: %v\n", err)
-				c.JSON(http.StatusOK, common.BadResponse(common.ServerError))
+				c.JSON(http.StatusOK, vo.BadResponse(vo.ServerError))
 				c.Abort()
 				return
 			}
@@ -68,7 +68,7 @@ func CourseOperationMiddleware(idKey string, readOnly bool) func(c *gin.Context)
 				}
 			}
 			log.Printf("User: %v has no access right to the course %v or course no exist.\n", user.GetIdentity(), courseID)
-			c.JSON(http.StatusOK, common.BadResponse(common.Error))
+			c.JSON(http.StatusOK, vo.BadResponse(vo.Error))
 			c.Abort()
 			return
 		}

@@ -1,4 +1,4 @@
-package vo
+package helper
 
 type PageRequest struct {
 	Page     int `json:"page"`
