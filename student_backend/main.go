@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"snail/teacher_backend/dao"
-	"snail/teacher_backend/routers"
-	"snail/teacher_backend/settings"
+	"student_bakcend/dao"
+	"student_bakcend/routers"
+	"student_bakcend/settings"
 )
 
 func main() {
