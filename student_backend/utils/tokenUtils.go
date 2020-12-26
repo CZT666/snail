@@ -45,7 +45,7 @@ func ParseToken(tokenString string) (*common.Token, error) {
 	return nil, errors.New("invalid token")
 }
 
-func GetToken(org interface{}) (student models.Student, err error) {
+func GetToken(org interface{}) (student *models.Student, err error) {
 	//t := reflect.TypeOf(org)
 	v := reflect.ValueOf(org)
 	studentInfo := v.Elem().FieldByName("Student").Interface()

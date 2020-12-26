@@ -28,15 +28,6 @@ func (t Teacher) GetType() int {
 	return 1
 }
 
-func CreateTeacher(teacher *Teacher) (err error) {
-	err = dao.DB.Create(&teacher).Error
-	return
-}
-
-func UpdateTeacher(teacher *Teacher) (err error) {
-	err = dao.DB.Save(&teacher).Error
-	return
-}
 
 func GetAllTeacher() (teacherList []Teacher, err error) {
 	if err = dao.DB.Find(&teacherList).Error; err != nil {
@@ -52,7 +43,4 @@ func GetTeacher(teacher *Teacher) (teacherList []Teacher, err error) {
 	return
 }
 
-func DeleteTeacher(id string) (err error) {
-	err = dao.DB.Where("id=?", id).Error
-	return
-}
+
