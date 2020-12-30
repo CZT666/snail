@@ -6,6 +6,7 @@ const (
 	ParamError   = "-2"
 	AccountExist = "-7"
 	MailNotExist = "-8"
+	FileError    = "-9"
 
 	/*
 		token校验

@@ -8,7 +8,6 @@ import (
 	"snail/teacher_backend/logic"
 	"snail/teacher_backend/models"
 	"snail/teacher_backend/models/helper"
-	"snail/teacher_backend/utils"
 	"snail/teacher_backend/vo"
 )
 
@@ -20,7 +19,7 @@ func AddCourse(c *gin.Context) {
 		return
 	}
 	org, _ := c.Get("user")
-	user, err := utils.GetToken(org)
+	user, err := models.GetToken(org)
 	if err != nil {
 		log.Printf("Course controller get token failed: %v\n", err)
 		c.JSON(http.StatusOK, vo.BadResponse(vo.ServerError))
@@ -34,7 +33,7 @@ func AddCourse(c *gin.Context) {
 
 func QueryCourseList(c *gin.Context) {
 	org, _ := c.Get("user")
-	user, err := utils.GetToken(org)
+	user, err := models.GetToken(org)
 	if err != nil {
 		log.Printf("Get token failed: %v\n", err)
 		c.JSON(http.StatusOK, vo.BadResponse(vo.ServerError))

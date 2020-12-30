@@ -5,14 +5,13 @@ import (
 	"reflect"
 	"snail/teacher_backend/models"
 	"snail/teacher_backend/models/helper"
-	"snail/teacher_backend/models/interfaces"
 	"snail/teacher_backend/utils"
 	"snail/teacher_backend/vo"
 	"strconv"
 	"time"
 )
 
-func AddCourse(course *models.Course, user interfaces.User) (baseResponse *vo.BaseResponse) {
+func AddCourse(course *models.Course, user helper.User) (baseResponse *vo.BaseResponse) {
 	baseResponse = new(vo.BaseResponse)
 	baseResponse.Code = vo.Success
 	searchCode := utils.EncodeMD5(user.GetIdentity(), strconv.FormatInt(time.Now().Unix(), 10))
@@ -29,7 +28,7 @@ func AddCourse(course *models.Course, user interfaces.User) (baseResponse *vo.Ba
 	return
 }
 
-func QueryCourseList(user interfaces.User, pageRequest *helper.PageRequest) (baseResponse *vo.BaseResponse) {
+func QueryCourseList(user helper.User, pageRequest *helper.PageRequest) (baseResponse *vo.BaseResponse) {
 	baseResponse = new(vo.BaseResponse)
 	baseResponse.Code = vo.Success
 	userType := user.GetType()
