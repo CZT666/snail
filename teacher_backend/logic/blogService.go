@@ -4,12 +4,11 @@ import (
 	"log"
 	"snail/teacher_backend/models"
 	"snail/teacher_backend/models/helper"
-	"snail/teacher_backend/models/interfaces"
 	"snail/teacher_backend/vo"
 	"time"
 )
 
-func AddBlog(blog *models.Blog, user interfaces.User) (baseResponse *vo.BaseResponse) {
+func AddBlog(blog *models.Blog, user helper.User) (baseResponse *vo.BaseResponse) {
 	baseResponse = new(vo.BaseResponse)
 	baseResponse.Code = vo.Success
 	blog.Author = user.GetIdentity()

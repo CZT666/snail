@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"snail/teacher_backend/logic"
 	"snail/teacher_backend/models"
-	"snail/teacher_backend/utils"
 	"snail/teacher_backend/vo"
 )
 
@@ -19,7 +18,7 @@ func AddBlog(c *gin.Context) {
 		return
 	}
 	org, _ := c.Get("user")
-	user, err := utils.GetToken(org)
+	user, err := models.GetToken(org)
 	if err != nil {
 		log.Printf("Blog controller get token failed: %v\n", err)
 		c.JSON(http.StatusOK, vo.BadResponse(vo.ServerError))
