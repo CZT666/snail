@@ -18,11 +18,6 @@ type Blog struct {
 	UpdateTime time.Time `json:"update_time"`
 }
 
-func CreateBlog(blog *Blog) (err error) {
-	err = dao.DB.Create(&blog).Error
-	return
-}
-
 func GetBlog(blog *Blog, request *helper.PageRequest) (blogList []Blog, total int, err error) {
 	page := request.Page
 	pageSize := request.PageSize
@@ -37,12 +32,11 @@ func GetSingleBlog(blog *Blog) (err error) {
 	return
 }
 
-func UpdateBlog(blog *Blog) (err error) {
-	err = dao.DB.Model(&Blog{}).Updates(&blog).Error
-	return
-}
-
-func DeleteBlog(blog *Blog) (err error) {
-	err = dao.DB.Delete(&blog).Error
+func GetSearchBlog(pageRequest *helper.PageRequest, searchName string) (blogList []Blog, total int, err error) {
+	page := pageRequest.Page
+	pageSize := pageRequest.PageSize
+	if err = dao.DB.Where("blog_title like ?", "%"+searchName+"%").Limit(pageSize).Offset((page - 1) * pageSize).Find(&blogList).Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
 	return
 }

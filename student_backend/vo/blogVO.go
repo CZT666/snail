@@ -1,7 +1,7 @@
 package vo
 
 type BlogListRequest struct {
-	CourseID int `json:"course_id"`
+	BlogID int `json:"id"`
 	Page     int `json:"page"`
 	PageSize int `json:"page_size"`
 }

@@ -48,7 +48,7 @@ func InitResetPwdConsumer(cfg *settings.ResetPwdConsumerConfig) (err error) {
 		return
 	}
 	consumer := &MyHandler{
-		Title: "snail_teacher_backend",
+		Title: "snail_student_backend",
 	}
 	conn.AddHandler(consumer)
 	address := fmt.Sprintf("%s:%d", cfg.Host, cfg.Port)
