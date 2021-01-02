@@ -12,6 +12,7 @@ type SelectProblem struct {
 	Answer      string `json:"answer"`
 	Score       int    `json:"score"`
 	Type        int    `json:"type"`
+	CategoryID  int    `json:"category_id"`
 	CreateBy    string `json:"create_by"`
 }
 
@@ -43,6 +44,19 @@ func GetSingleSelectProblem(problem *SelectProblem) (err error) {
 
 func DeleteSelectProblem(problem *SelectProblem) (err error) {
 	err = dao.DB.Delete(&problem).Error
+	return
+}
+
+func FindSelectProblem(keyWord string, categoryID int, createBy string) (problemList []*SelectProblem, err error) {
+	word := "%" + keyWord + "%"
+	if categoryID > 0 {
+		err = dao.DB.Where("category_id = ? and description like ? and create_by = ? or create_by = 'system'", categoryID, word, createBy).Find(&problemList).Error
+	} else {
+		err = dao.DB.Where("description like ? and create_by = ? or create_by = 'system'", word, createBy).Find(&problemList).Error
+	}
+	if err != nil {
+		return nil, err
+	}
 	return
 }
 

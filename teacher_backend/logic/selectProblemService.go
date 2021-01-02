@@ -110,12 +110,14 @@ func getQueFromXlsx(filePath string, user helper.User) (queList []*models.Select
 				switch index {
 				case 0:
 					que.Description = cell.String()
-				case length - 3:
+				case length - 4:
 					que.Answer = cell.String()
-				case length - 2:
+				case length - 3:
 					que.Score, _ = strconv.Atoi(cell.String())
-				case length - 1:
+				case length - 2:
 					que.Type, _ = strconv.Atoi(cell.String())
+				case length - 1:
+					que.CategoryID = getCategoryId(cell.String(), user.GetIdentity())
 				default:
 					choices = append(choices, cell.String())
 				}
@@ -134,6 +136,20 @@ func getQueFromXlsx(filePath string, user helper.User) (queList []*models.Select
 		}
 	}
 	return
+}
+
+func getCategoryId(categoryName string, createBy string) int {
+	selectCategory := new(models.SelectCategory)
+	selectCategory.CategoryName = categoryName
+	selectCategory.CreateBy = createBy
+	if err := models.GetSingleCategory(selectCategory); err == nil {
+		return selectCategory.ID
+	}
+	if err := models.CreateSelectCategory(selectCategory); err == nil {
+		return selectCategory.ID
+	}
+	log.Println("Select problem service get category id failed")
+	return -1
 }
 
 // 他妈的狗东西写得什么鸡巴玩意儿，这种垃圾库也好意思开源
@@ -265,8 +281,30 @@ func QuerySelectProblemDetail(req *vo.ProblemDetailReq) (baseResponse *vo.BaseRe
 	return
 }
 
-//func QuerySelectProblemCategory(user helper.User) (baseResponse *vo.BaseResponse) {
-//	baseResponse = new(vo.BaseResponse)
-//	baseResponse.Code = vo.Success
-//
-//}
+func QuerySelectProblemCategory(user helper.User) (baseResponse *vo.BaseResponse) {
+	baseResponse = new(vo.BaseResponse)
+	baseResponse.Code = vo.Success
+	categoryList, err := models.GetSelectCategories(user.GetIdentity())
+	if err != nil {
+		log.Printf("Select problem service get select cateories failed: %v\n", err)
+		baseResponse.Code = vo.Error
+		baseResponse.Msg = "查询失败"
+		return
+	}
+	baseResponse.Data = categoryList
+	return
+}
+
+func FindSelectProblem(req *vo.FindSelectReq, user helper.User) (baseResponse *vo.BaseResponse) {
+	baseResponse = new(vo.BaseResponse)
+	baseResponse.Code = vo.Success
+	problemList, err := models.FindSelectProblem(req.KeyWord, req.CategoryID, user.GetIdentity())
+	if err != nil {
+		log.Printf("Select problem service find select problem failed: %v\n", err)
+		baseResponse.Code = vo.Error
+		baseResponse.Msg = "查询失败"
+		return
+	}
+	baseResponse.Data = problemList
+	return
+}

@@ -19,5 +19,7 @@ func problemGroup(engine *gin.Engine) {
 		groupSelect.POST("/deleteFromSet", middleware.CourseOperationMiddleware(courseID, false), controller.DeleteSelectProblemFromSet)
 		groupSelect.GET("/list", controller.QuerySelectProblemList)
 		groupSelect.GET("/detail", controller.QuerySelectProblemDetail)
+		groupSelect.GET("/category", controller.QuerySelectProblemCategory)
+		groupSelect.GET("/find", controller.FindSelectProblem)
 	}
 }

@@ -38,3 +38,8 @@ type DeleteSelectProblemFromSetReq struct {
 type ProblemDetailReq struct {
 	QueID int `json:"que_id"`
 }
+
+type FindSelectReq struct {
+	KeyWord    string `json:"key_word"`
+	CategoryID int    `json:"category_id"`
+}
