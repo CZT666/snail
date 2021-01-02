@@ -40,7 +40,7 @@ func GetCourse(course *Course, pageRequest *helper.PageRequest) (courseList []Co
 	return
 }
 
-func GetSearchCourse(course *Course, pageRequest *helper.PageRequest, searchName string) (courseList []Course, total int, err error) {
+func GetSearchCourse(pageRequest *helper.PageRequest, searchName string) (courseList []Course, total int, err error) {
 	page := pageRequest.Page
 	pageSize := pageRequest.PageSize
 	if err = dao.DB.Where("course_title like ?", "%"+searchName+"%").Limit(pageSize).Offset((page - 1) * pageSize).Find(&courseList).Count(&total).Error; err != nil {

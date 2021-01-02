@@ -68,14 +68,13 @@ func QueryCourseDetail(c *gin.Context) {
 
 func SearchCourse(c *gin.Context)  {
 	searchName := c.Param("name")
-	course := new(models.Course)
 	pageRequest := helper.NewPageRequest()
 	if err := c.BindJSON(&pageRequest); err != nil {
 		log.Printf("Query course list bind json failed: %v\n", err)
 		c.JSON(http.StatusOK, vo.BadResponse(vo.ParamError))
 		return
 	}
-	baseResponse := logic.SearchCourse(course,pageRequest,searchName)
+	baseResponse := logic.SearchCourse(pageRequest,searchName)
 	c.JSON(http.StatusOK, baseResponse)
 	return
 }

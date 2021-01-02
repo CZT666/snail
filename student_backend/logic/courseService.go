@@ -54,10 +54,10 @@ func QueryCourseDetail(course *models.Course) (baseResponse *vo.BaseResponse) {
 	return
 }
 
-func SearchCourse(course *models.Course, pageRequest *helper.PageRequest,searchName string) (baseResponse *vo.BaseResponse) {
+func SearchCourse(pageRequest *helper.PageRequest,searchName string) (baseResponse *vo.BaseResponse) {
 	baseResponse = new(vo.BaseResponse)
 	baseResponse.Code = vo.Success
-	courseList, total, err := models.GetSearchCourse(course, pageRequest,searchName)
+	courseList, total, err := models.GetSearchCourse(pageRequest,searchName)
 	if err != nil {
 		log.Printf("Query course list failed: %v\n", err)
 		baseResponse.Code = vo.ServerError
