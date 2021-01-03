@@ -41,7 +41,7 @@ func TeacherLogin(user *vo.LoginRequest) (baseResponse *vo.BaseResponse) {
 	teacher, ok := isTeacher(account, pwd)
 	if ok {
 		log.Printf("Teacher login: %v\n", account)
-		tokenString, err := utils.GenToken(teacher, 1)
+		tokenString, err := models.GenToken(teacher, 1)
 		if err != nil {
 			fmt.Printf("Generate token error: %v\n", err)
 			baseResponse.Code = vo.TokenError
@@ -53,7 +53,7 @@ func TeacherLogin(user *vo.LoginRequest) (baseResponse *vo.BaseResponse) {
 		student, ok := isAssistance(account, pwd)
 		if ok {
 			log.Printf("Assistance login: %v\n", account)
-			tokenString, err := utils.GenToken(student, 2)
+			tokenString, err := models.GenToken(student, 2)
 			if err != nil {
 				fmt.Printf("Generate token error: %v\n", err)
 				baseResponse.Code = vo.TokenError

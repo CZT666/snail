@@ -10,23 +10,43 @@ import (
 	"snail/teacher_backend/utils"
 	"snail/teacher_backend/vo"
 	"strconv"
+	"strings"
+)
+
+const (
+	ContentType = "Content-Type"
+	FormData    = "multipart/form-data"
 )
 
 func CourseOperationMiddleware(idKey string, readOnly bool) func(c *gin.Context) {
 	return func(c *gin.Context) {
-		courseID, err := getCourseID(c, idKey)
-		if err != nil {
-			log.Printf("Course operation middle ware get course id failed: %v\n", err)
-			c.JSON(http.StatusOK, vo.BadResponse(vo.ParamError))
-			c.Abort()
-			return
+		var courseID int
+		log.Println(c.Request.Header.Get(ContentType))
+		if strings.Contains(c.Request.Header.Get(ContentType), FormData) {
+			_courseID, err := strconv.Atoi(c.PostForm(idKey))
+			if err != nil {
+				log.Printf("Course operation middle ware get course id by form failed: %v\n", err)
+				c.JSON(http.StatusOK, vo.BadResponse(vo.ParamError))
+				c.Abort()
+				return
+			}
+			courseID = _courseID
+		} else {
+			_courseID, err := getCourseID(c, idKey)
+			if err != nil {
+				log.Printf("Course operation middle ware get course id failed: %v\n", err)
+				c.JSON(http.StatusOK, vo.BadResponse(vo.ParamError))
+				c.Abort()
+				return
+			}
+			courseID = _courseID
 		}
 		if !isCoursePrivate(courseID) && readOnly {
 			c.Next()
 			return
 		}
 		org, _ := c.Get("user")
-		user, err := utils.GetToken(org)
+		user, err := models.GetToken(org)
 		if err != nil {
 			log.Printf("Get token failed: %v\n", err)
 			c.JSON(http.StatusOK, vo.BadResponse(vo.ServerError))

@@ -1,4 +1,4 @@
-package interfaces
+package helper
 
 type User interface {
 	GetIdentity() string

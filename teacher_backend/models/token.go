@@ -1,4 +1,4 @@
-package utils
+package models
 
 import (
 	"bytes"
@@ -7,11 +7,15 @@ import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"reflect"
-	"snail/teacher_backend/common"
-	"snail/teacher_backend/models"
-	"snail/teacher_backend/models/interfaces"
+	"snail/teacher_backend/models/helper"
 	"time"
 )
+
+type Token struct {
+	Type int         `json:"type"`
+	User interface{} `json:"user"`
+	jwt.StandardClaims
+}
 
 const (
 	TokenExpireDuration = time.Hour * 2
@@ -21,44 +25,44 @@ const (
 var TokenSecret = []byte("snail")
 
 func GenToken(user interface{}, userType int) (string, error) {
-	info := new(common.Token)
+	info := new(Token)
 	info.User = user
 	info.Type = userType
 	return genToken(info)
 }
 
-func genToken(info *common.Token) (string, error) {
+func genToken(info *Token) (string, error) {
 	info.ExpiresAt = time.Now().Add(TokenExpireDuration).Unix()
 	info.Issuer = Signature
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, info)
 	return token.SignedString(TokenSecret)
 }
 
-func ParseToken(tokenString string) (*common.Token, error) {
-	token, err := jwt.ParseWithClaims(tokenString, &common.Token{}, func(token *jwt.Token) (interface{}, error) {
+func ParseToken(tokenString string) (*Token, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &Token{}, func(token *jwt.Token) (interface{}, error) {
 		return TokenSecret, nil
 	})
 	if err != nil {
 		return nil, err
 	}
-	if user, ok := token.Claims.(*common.Token); ok && token.Valid {
+	if user, ok := token.Claims.(*Token); ok && token.Valid {
 		return user, nil
 	}
 	return nil, errors.New("invalid token")
 }
 
-func GetToken(org interface{}) (user interfaces.User, err error) {
+func GetToken(org interface{}) (user helper.User, err error) {
 	//t := reflect.TypeOf(org)
 	v := reflect.ValueOf(org)
 	typeValue := v.Elem().FieldByName("Type").Int()
 	userIno := v.Elem().FieldByName("User").Interface()
 	jsonString := genJson(userIno)
 	if typeValue == 1 {
-		teacher := new(models.Teacher)
+		teacher := new(Teacher)
 		err = json.Unmarshal([]byte(jsonString), &teacher)
 		user = teacher
 	} else {
-		assistance := new(models.Student)
+		assistance := new(Student)
 		err = json.Unmarshal([]byte(jsonString), &assistance)
 		user = assistance
 	}
