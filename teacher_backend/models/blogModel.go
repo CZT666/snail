@@ -38,7 +38,7 @@ func GetSingleBlog(blog *Blog) (err error) {
 }
 
 func UpdateBlog(blog *Blog) (err error) {
-	err = dao.DB.Model(&Blog{}).Updates(&blog).Error
+	err = dao.DB.Model(&Blog{}).Where("id = ?", blog.ID).Updates(&blog).Error
 	return
 }
 

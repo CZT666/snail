@@ -12,9 +12,8 @@ type AddSelectProblemReq struct {
 }
 
 type AppendSelectProblemReq struct {
-	QueSetId int `json:"que_set_id"`
+	BlogId   int `json:"blog_id"`
 	QueId    int `json:"que_id"`
-	QueType  int `json:"que_type"`
 	CourseID int `json:"course_id"`
 }
 
@@ -42,4 +41,27 @@ type ProblemDetailReq struct {
 type FindSelectReq struct {
 	KeyWord    string `json:"key_word"`
 	CategoryID int    `json:"category_id"`
+}
+
+type AddCodeProblemReq struct {
+	BlogID      int                 `json:"blog_id"`
+	CourseID    int                 `json:"course_id"`
+	CodeProblem *models.CodeProblem `json:"code_problem"`
+}
+
+type AddCheckPointBatchReq struct {
+	QueID int                   `form:"que_id"`
+	File  *multipart.FileHeader `form:"file"`
+}
+
+type AppendCodeProblemReq struct {
+	BlogID   int `json:"blog_id"`
+	QueId    int `json:"que_id"`
+	CourseID int `json:"course_id"`
+}
+
+type DeleteCodeProblemFromSetReq struct {
+	BlogID   int `json:"blog_id"`
+	QueID    int `json:"que_id"`
+	CourseId int `json:"course_id"`
 }

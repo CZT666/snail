@@ -22,7 +22,7 @@ func CreateSelectProblem(problem *SelectProblem) (err error) {
 }
 
 func UpdateSelectProblem(problem *SelectProblem) (err error) {
-	err = dao.DB.Model(&SelectProblem{}).Updates(&problem).Error
+	err = dao.DB.Model(&SelectProblem{}).Where("id = ?", problem.ID).Updates(&problem).Error
 	return
 }
 

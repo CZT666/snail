@@ -42,14 +42,10 @@ func AddSelectProblem(req *vo.AddSelectProblemReq, user helper.User) (baseRespon
 func AppendSelectProblem(req *vo.AppendSelectProblemReq) (baseResponse *vo.BaseResponse) {
 	baseResponse = new(vo.BaseResponse)
 	baseResponse.Code = vo.Success
-	if req.QueType == 0 {
-		if err := models.AppendQueSetSelectProblem(req.QueSetId, req.QueId); err != nil {
-			log.Printf("Select problem service append single select problem failed: %v\n", err)
-			baseResponse.Code = vo.Error
-			baseResponse.Msg = "增加题目失败"
-		}
-	} else {
-		// TODO code类型
+	if err := models.AppendQueSetSelectProblem(req.BlogId, req.QueId); err != nil {
+		log.Printf("Select problem service append single select problem failed: %v\n", err)
+		baseResponse.Code = vo.Error
+		baseResponse.Msg = "增加题目失败"
 	}
 	return
 }
@@ -105,8 +101,11 @@ func getQueFromXlsx(filePath string, user helper.User) (queList []*models.Select
 			}
 			que := new(models.SelectProblem)
 			length := len(row.Cells)
+			for row.Cells[length-1].String() == "" {
+				length -= 1
+			}
 			var choices []string
-			for index, cell := range row.Cells {
+			for index, cell := range row.Cells[:length] {
 				switch index {
 				case 0:
 					que.Description = cell.String()

@@ -22,4 +22,18 @@ func problemGroup(engine *gin.Engine) {
 		groupSelect.GET("/category", controller.QuerySelectProblemCategory)
 		groupSelect.GET("/find", controller.FindSelectProblem)
 	}
+	groupCode := engine.Group("/codeProblem")
+	groupCode.Use(middleware.JWTAuthMiddleware())
+	{
+		groupCode.POST("/add", controller.AddCodeProblem)
+		groupCode.POST("/addCheckPoint", controller.AddCheckPoint)
+		groupCode.POST("/addAllCheckPoint", controller.AddCheckPointBatch)
+		groupCode.POST("/updateCheckPoint", controller.UpdateCheckPoint)
+		groupCode.POST("deleteCheckPoint", controller.DeleteCheckPoint)
+		groupCode.POST("/update", controller.UpdateCodeProblem)
+		groupCode.POST("/delete", controller.DeleteCodeProblem)
+		groupCode.POST("/append", controller.AppendCodeProblem)
+		groupCode.POST("/deleteFromSet", controller.DeleteCodeProblemFromSet)
+		groupCode.GET("/categories", controller.QueryCodeCategories)
+	}
 }
