@@ -141,7 +141,6 @@ func QuerySelectProblemDetail(ctx *gin.Context) {
 	return
 }
 
-/*
 func QuerySelectProblemCategory(ctx *gin.Context) {
 	org, _ := ctx.Get("user")
 	user, err := models.GetToken(org)
@@ -150,9 +149,26 @@ func QuerySelectProblemCategory(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, vo.BadResponse(vo.ServerError))
 		return
 	}
-	//baseResponse := logic.QuerySelectProblemCategory(user)
-	//ctx.JSON(http.StatusOK, baseResponse)
+	baseResponse := logic.QuerySelectProblemCategory(user)
+	ctx.JSON(http.StatusOK, baseResponse)
 	return
 }
 
-*/
+func FindSelectProblem(ctx *gin.Context) {
+	req := new(vo.FindSelectReq)
+	if err := ctx.ShouldBindBodyWith(&req, binding.JSON); err != nil {
+		log.Printf("Find select problem bind json failed: %v\n", err)
+		ctx.JSON(http.StatusOK, vo.BadResponse(vo.ParamError))
+		return
+	}
+	org, _ := ctx.Get("user")
+	user, err := models.GetToken(org)
+	if err != nil {
+		log.Printf("Select problem controller get token failed: %v\n", err)
+		ctx.JSON(http.StatusOK, vo.BadResponse(vo.ServerError))
+		return
+	}
+	baseResponse := logic.FindSelectProblem(req, user)
+	ctx.JSON(http.StatusOK, baseResponse)
+	return
+}

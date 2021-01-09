@@ -34,7 +34,7 @@ func CreateTeacher(teacher *Teacher) (err error) {
 }
 
 func UpdateTeacher(teacher *Teacher) (err error) {
-	err = dao.DB.Save(&teacher).Error
+	err = dao.DB.Model(&Teacher{}).Where("id = ?", teacher.ID).Updates(&teacher).Error
 	return
 }
 
