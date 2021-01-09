@@ -37,6 +37,7 @@ func problemGroup(engine *gin.Engine) {
 		groupCode.GET("/categories", controller.QueryCodeCategories)
 	}
 	groupSet := engine.Group("/queSet")
+	groupSet.Use(middleware.JWTAuthMiddleware())
 	{
 		groupSet.GET("/query", controller.QueryQueSet)
 	}
