@@ -36,4 +36,8 @@ func problemGroup(engine *gin.Engine) {
 		groupCode.POST("/deleteFromSet", controller.DeleteCodeProblemFromSet)
 		groupCode.GET("/categories", controller.QueryCodeCategories)
 	}
+	groupSet := engine.Group("/queSet")
+	{
+		groupSet.GET("/query", controller.QueryQueSet)
+	}
 }
