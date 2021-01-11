@@ -24,7 +24,7 @@ func CreateCourse(course *Course) (err error) {
 }
 
 func UpdateCourse(course *Course) (err error) {
-	err = dao.DB.Model(&Course{}).Updates(&course).Error
+	err = dao.DB.Model(&Course{}).Where("id = ?", course.ID).Updates(&course).Error
 	return
 }
 

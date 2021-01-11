@@ -42,14 +42,10 @@ func AddSelectProblem(req *vo.AddSelectProblemReq, user helper.User) (baseRespon
 func AppendSelectProblem(req *vo.AppendSelectProblemReq) (baseResponse *vo.BaseResponse) {
 	baseResponse = new(vo.BaseResponse)
 	baseResponse.Code = vo.Success
-	if req.QueType == 0 {
-		if err := models.AppendQueSetSelectProblem(req.QueSetId, req.QueId); err != nil {
-			log.Printf("Select problem service append single select problem failed: %v\n", err)
-			baseResponse.Code = vo.Error
-			baseResponse.Msg = "增加题目失败"
-		}
-	} else {
-		// TODO code类型
+	if err := models.AppendQueSetSelectProblem(req.BlogId, req.QueId); err != nil {
+		log.Printf("Select problem service append single select problem failed: %v\n", err)
+		baseResponse.Code = vo.Error
+		baseResponse.Msg = "增加题目失败"
 	}
 	return
 }
@@ -105,17 +101,22 @@ func getQueFromXlsx(filePath string, user helper.User) (queList []*models.Select
 			}
 			que := new(models.SelectProblem)
 			length := len(row.Cells)
+			for row.Cells[length-1].String() == "" {
+				length -= 1
+			}
 			var choices []string
-			for index, cell := range row.Cells {
+			for index, cell := range row.Cells[:length] {
 				switch index {
 				case 0:
 					que.Description = cell.String()
-				case length - 3:
+				case length - 4:
 					que.Answer = cell.String()
-				case length - 2:
+				case length - 3:
 					que.Score, _ = strconv.Atoi(cell.String())
-				case length - 1:
+				case length - 2:
 					que.Type, _ = strconv.Atoi(cell.String())
+				case length - 1:
+					que.CategoryID = getCategoryId(cell.String(), user.GetIdentity())
 				default:
 					choices = append(choices, cell.String())
 				}
@@ -134,6 +135,20 @@ func getQueFromXlsx(filePath string, user helper.User) (queList []*models.Select
 		}
 	}
 	return
+}
+
+func getCategoryId(categoryName string, createBy string) int {
+	selectCategory := new(models.SelectCategory)
+	selectCategory.CategoryName = categoryName
+	selectCategory.CreateBy = createBy
+	if err := models.GetSingleCategory(selectCategory); err == nil {
+		return selectCategory.ID
+	}
+	if err := models.CreateSelectCategory(selectCategory); err == nil {
+		return selectCategory.ID
+	}
+	log.Println("Select problem service get category id failed")
+	return -1
 }
 
 // 他妈的狗东西写得什么鸡巴玩意儿，这种垃圾库也好意思开源
@@ -265,8 +280,30 @@ func QuerySelectProblemDetail(req *vo.ProblemDetailReq) (baseResponse *vo.BaseRe
 	return
 }
 
-//func QuerySelectProblemCategory(user helper.User) (baseResponse *vo.BaseResponse) {
-//	baseResponse = new(vo.BaseResponse)
-//	baseResponse.Code = vo.Success
-//
-//}
+func QuerySelectProblemCategory(user helper.User) (baseResponse *vo.BaseResponse) {
+	baseResponse = new(vo.BaseResponse)
+	baseResponse.Code = vo.Success
+	categoryList, err := models.GetSelectCategories(user.GetIdentity())
+	if err != nil {
+		log.Printf("Select problem service get select cateories failed: %v\n", err)
+		baseResponse.Code = vo.Error
+		baseResponse.Msg = "查询失败"
+		return
+	}
+	baseResponse.Data = categoryList
+	return
+}
+
+func FindSelectProblem(req *vo.FindSelectReq, user helper.User) (baseResponse *vo.BaseResponse) {
+	baseResponse = new(vo.BaseResponse)
+	baseResponse.Code = vo.Success
+	problemList, err := models.FindSelectProblem(req.KeyWord, req.CategoryID, user.GetIdentity())
+	if err != nil {
+		log.Printf("Select problem service find select problem failed: %v\n", err)
+		baseResponse.Code = vo.Error
+		baseResponse.Msg = "查询失败"
+		return
+	}
+	baseResponse.Data = problemList
+	return
+}

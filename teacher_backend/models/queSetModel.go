@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"snail/teacher_backend/dao"
 	"snail/teacher_backend/models/helper"
 	"snail/teacher_backend/utils"
@@ -20,7 +21,7 @@ func CreateQueSet(set *QueSet) (err error) {
 }
 
 func UpdateQueSet(set *QueSet) (err error) {
-	err = dao.DB.Model(&QueSet{}).Updates(&set).Error
+	err = dao.DB.Model(&QueSet{}).Where("blog_id = ?", set.BlogID).Updates(&set).Error
 	return
 }
 
@@ -47,7 +48,9 @@ func AppendQueSetSelectProblem(blogID int, pid int) (err error) {
 	queSet := new(QueSet)
 	queSet.BlogID = blogID
 	count := 0
+	fmt.Printf("queSet: %v\n", queSet)
 	dao.DB.Where(&queSet).First(&queSet).Count(&count)
+	fmt.Printf("queSet: %v\n", queSet)
 	var builder strings.Builder
 	addPid := strconv.Itoa(pid)
 	if count != 0 {
@@ -60,11 +63,40 @@ func AppendQueSetSelectProblem(blogID int, pid int) (err error) {
 		builder.WriteString(addPid)
 		builder.WriteString(",")
 		queSet.SelectProblem = builder.String()
-		err = dao.DB.Model(&QueSet{}).Updates(queSet).Error
+		err = dao.DB.Model(&QueSet{}).Where("blog_id = ?", queSet.BlogID).Updates(&queSet).Error
 	} else {
-		builder.WriteString(strconv.Itoa(pid))
+		builder.WriteString("0,")
+		builder.WriteString(addPid)
 		builder.WriteString(",")
 		queSet.SelectProblem = builder.String()
+		err = dao.DB.Create(&queSet).Error
+	}
+	return
+}
+
+func AppendQueSetCodeProblem(blogID int, pid int) (err error) {
+	queSet := new(QueSet)
+	queSet.BlogID = blogID
+	count := 0
+	dao.DB.Where(&queSet).First(&queSet).Count(&count)
+	var builder strings.Builder
+	addPid := strconv.Itoa(pid)
+	if count != 0 {
+		add := queSet.CodeProblem
+		set := utils.String2Set(add, ",")
+		if set.Contains(addPid) {
+			return
+		}
+		builder.WriteString(add)
+		builder.WriteString(addPid)
+		builder.WriteString(",")
+		queSet.CodeProblem = builder.String()
+		err = dao.DB.Model(&QueSet{}).Where("blog_id = ?", queSet.BlogID).Updates(&queSet).Error
+	} else {
+		builder.WriteString("0,")
+		builder.WriteString(addPid)
+		builder.WriteString(",")
+		queSet.CodeProblem = builder.String()
 		err = dao.DB.Create(&queSet).Error
 	}
 	return
