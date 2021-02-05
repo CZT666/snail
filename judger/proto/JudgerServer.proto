@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package proto;
+
+service JudgeServer {
+  rpc NewSubmission(NewSubmissionReq) returns (NewSubmissionRsp){}
+}
+
+message NewSubmissionReq {
+  int32 submissionId = 1;
+  string originIp = 2;
+}
+
+message NewSubmissionRsp {
+  int32 result = 1;
+}
