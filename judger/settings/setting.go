@@ -11,9 +11,11 @@ import (
 var Conf = new(Config)
 
 type Config struct {
+	Host         string `yaml:"host"`
 	Port         string `yaml:"port"`
 	MaxTask      int    `yaml:"maxTask"`
 	*MySQLConfig `yaml:"mysql"`
+	*ZKConfig    `yaml:"zk"`
 }
 
 type MySQLConfig struct {
@@ -22,6 +24,13 @@ type MySQLConfig struct {
 	Host     string `yaml:"host"`
 	Port     int    `yaml:"port"`
 	DB       string `yaml:"db"`
+}
+
+type ZKConfig struct {
+	Host string `yaml:"host"`
+	Port string `yaml:"port"`
+	Root string `yaml:"root"`
+	Node string `yaml:"node"`
 }
 
 func Init() {
