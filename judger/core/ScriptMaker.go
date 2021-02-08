@@ -70,23 +70,53 @@ func genCompileSh(fileName string, language *model.Language, workPath string) er
 	return nil
 }
 
-func genCheckScript(index int, runCommand string, exeFileName string, input string, workPath string) (fileName string, err error) {
-	fileName = workPath + "/" + strconv.Itoa(index) + ".sh"
+func genCheckScript(index int, runCommand string, exeFileName string, input string, problem *model.CodeProblem, workPath string) (fileName string, err error) {
+	fileName = workPath + "/check_" + strconv.Itoa(index) + ".sh"
 	file, err := os.Create(fileName)
 	defer file.Close()
 	if err != nil {
-		log.Printf("gen check script make file failed: %v\n", err)
+		log.Printf("gen check script main file failed: %v\n", err)
 		return "", err
 	}
+	watchFileName := workPath + "/watch_" + strconv.Itoa(index) + ".sh"
+	watchFile, err := os.Create(watchFileName)
+	defer watchFile.Close()
+	if err != nil {
+		log.Printf("gen check script watch file failed: %v\n", err)
+		return "", err
+	}
+	// 生成主程序脚本
 	var stringBuilder strings.Builder
-	stringBuilder.WriteString("#!/bin/bash\n")
+	stringBuilder.WriteString("#!/bin/bash\nmaxTime=" + strconv.Itoa(problem.TimeLimit) + "\nmaxMemory=" +
+		strconv.Itoa(problem.MemoryLimit) + "\ncIndex=" + strconv.Itoa(index) + "\n")
+	stringBuilder.WriteString("source " + watchFileName + " $$ $maxTime $maxMemory $cIndex &\n")
+	stringBuilder.WriteString("chipid=$!\n")
 	stringBuilder.WriteString(runCommand + " " + exeFileName)
 	for _, param := range strings.Split(input, ",") {
 		stringBuilder.WriteString(" " + param)
 	}
+	stringBuilder.WriteString(" >> ./result_${cIndex}.txt\nkill $chipid")
 	_, err = file.WriteString(stringBuilder.String())
 	if err != nil {
 		log.Printf("gen check write file failed: %v\n", err)
+		return "", err
+	}
+
+	// 生成监控脚本
+	var sb strings.Builder
+	sb.WriteString("#!/bin/bash\nfpid=$1\nmaxTime=$2\nmaxMemory=$3\ncIndex=$4\ntimeGap=0.01\nstartTime=$[$(date +%s%N)/1000000]\n" +
+		"while true\ndo\necho \"watch pid $fpid\"\n" +
+		"info=$(cat  /proc/$fpid/status|grep -e VmRSS)\necho \"current memory $info\"\n" +
+		"currentMemory=`echo $info | tr -cd \"[0-9]\"`\necho \"memory: $currentMemory\"\n" +
+		"echo \"max: $maxMemory\"\nif [ $currentMemory -gt $maxMemory ];then\necho \"memory out\"\nkill $fpid\n" +
+		"echo \"-1\" >> ./result_${cIndex}.txt\nbreak\nfi\n" +
+		"echo $currentMemory >> ./memory_log_${cIndex}.txt\ncurrentTime=$[$(date +%s%N)/1000000]\n" +
+		"declare -i tmp=$currentTime-$startTime\necho \"time gap $tmp\"\n" +
+		"echo $tmp >> ./time_log_${cIndex}.txt\nif [ $tmp -gt $maxTime ];then\necho \"time out\"\nkill $fpid\n" +
+		"echo \"-2\" >> ./result_${cIndex}.txt")
+	_, err = watchFile.WriteString(sb.String())
+	if err != nil {
+		log.Printf("gen watch write file failed: %v\n", err)
 		return "", err
 	}
 	return

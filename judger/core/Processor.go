@@ -78,6 +78,7 @@ func compile(wordPath string) (result int, msg string) {
 	return 0, "编译成功"
 }
 
+// TODO check answer
 func runJudge(submission *model.Submission, workPath string) (msg string) {
 	queId := submission.ProblemId
 	checkPointList, err := model.GetCheckPointByProblemId(queId)
@@ -92,8 +93,13 @@ func runJudge(submission *model.Submission, workPath string) (msg string) {
 		log.Printf("get one language failed: %v\n", err)
 		return err.Error()
 	}
+	question, err := model.GetProblemById(queId)
+	if err != nil {
+		log.Printf("get question failed: %v\n", err)
+		return err.Error()
+	}
 	for index, checkPoint := range checkPointList {
-		scriptName, err := genCheckScript(index, language.RunCommand, language.ExeFileName, checkPoint.Input, workPath)
+		scriptName, err := genCheckScript(index, language.RunCommand, language.ExeFileName, checkPoint.Input, question, workPath)
 		if err != nil {
 			OnErrorOccurred("执行第" + strconv.Itoa(index) + "个测试用例失败" + err.Error())
 			continue
