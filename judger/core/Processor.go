@@ -84,7 +84,6 @@ func compile(wordPath string) (result int, msg string) {
 	return 0, "编译成功"
 }
 
-// TODO 保存记录
 func runJudge(submission *model.Submission, workPath string) (msg string) {
 	queId := submission.ProblemId
 	checkPointList, err := model.GetCheckPointByProblemId(queId)
@@ -104,7 +103,7 @@ func runJudge(submission *model.Submission, workPath string) (msg string) {
 		log.Printf("get question failed: %v\n", err)
 		return err.Error()
 	}
-	totalMemory := 0
+	maxMemory := 0
 	totalTime := 0
 	count := 0
 	pass := 0
@@ -139,11 +138,18 @@ func runJudge(submission *model.Submission, workPath string) (msg string) {
 		}
 		OnOneCheckPointFinished("执行第" + strconv.Itoa(index) + "个样例完成,结果:" + ret)
 		addCostTime(timeLog, &totalTime)
-		addMemory(memoryLog, &totalMemory)
+		fixMemory(memoryLog, &maxMemory)
 	}
-	return "样例通过情况:" + strconv.Itoa(pass) + "/" + strconv.Itoa(count) +
-		"; 平均耗时:" + strconv.Itoa(totalTime/count) +
-		"; 占用内存" + strconv.Itoa(totalMemory/count)
+	averageTime := totalTime / count
+	passNum := strconv.Itoa(pass) + "/" + strconv.Itoa(count)
+	result := 0
+	if pass != count {
+		result = 1
+	}
+	saveSubmission(submission, averageTime, maxMemory, passNum, result)
+	return "样例通过情况:" + passNum +
+		"; 平均耗时:" + strconv.Itoa(averageTime) +
+		"; 最大占用内存" + strconv.Itoa(maxMemory)
 }
 
 func checkAnswer(resultPath string, output string) (msg string, code int, err error) {
@@ -203,7 +209,7 @@ func addCostTime(timeLogPath string, totalTime *int) {
 	*totalTime += ret
 }
 
-func addMemory(memoryLogPath string, totalMemory *int) {
+func fixMemory(memoryLogPath string, maxMemory *int) {
 	result, err := os.Open(memoryLogPath)
 	if err != nil {
 		log.Printf("read memory file failed: %v\n", err)
@@ -211,8 +217,6 @@ func addMemory(memoryLogPath string, totalMemory *int) {
 	}
 	defer result.Close()
 	reader := bufio.NewReader(result)
-	total := 0
-	count := 0
 	for {
 		str, err := reader.ReadString('\n') //读到一个换行就结束
 		if err == io.EOF {                  //io.EOF 表示文件的末尾
@@ -224,8 +228,19 @@ func addMemory(memoryLogPath string, totalMemory *int) {
 			log.Printf("convert string failed: %v\n", err)
 			return
 		}
-		total += tmp
-		count += 1
+		if tmp > *maxMemory {
+			*maxMemory = tmp
+		}
 	}
-	*totalMemory += total / count
+}
+
+func saveSubmission(submission *model.Submission, costTime int, memory int, pass string, result int) {
+	submission.JudgeResult = result
+	submission.UsedTime = costTime
+	submission.UsedMemory = memory
+	submission.PassNum = pass
+	err := model.UpdateSubmission(submission)
+	if err != nil {
+		log.Printf("save submission failed: %v\n", err)
+	}
 }

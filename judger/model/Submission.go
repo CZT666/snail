@@ -12,10 +12,10 @@ type Submission struct {
 	LanguageId  int        `json:"language_id"`
 	SubmitTime  *time.Time `json:"submit_time"`
 	ExecuteTime *time.Time `json:"execute_time"`
-	UsedTime    *time.Time `json:"used_time"`
+	UsedTime    int        `json:"used_time"`
 	UsedMemory  int        `json:"used_memory"`
 	JudgeResult int        `json:"judge_result"`
-	JudgeScore  int        `json:"judge_score"`
+	PassNum     string     `json:"pass_num"`
 	JudgeLog    string     `json:"judge_log"`
 	Code        string     `json:"code"`
 }
