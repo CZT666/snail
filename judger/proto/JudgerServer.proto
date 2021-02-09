@@ -4,6 +4,7 @@ package proto;
 
 service JudgeServer {
   rpc NewSubmission(NewSubmissionReq) returns (NewSubmissionRsp){}
+
 }
 
 message NewSubmissionReq {

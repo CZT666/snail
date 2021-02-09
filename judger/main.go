@@ -2,9 +2,13 @@ package main
 
 import (
 	"fmt"
-	"snail/judger/core"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
+	"log"
+	"net"
+	"snail/judger/application"
 	"snail/judger/dao"
-	proto "snail/judger/grpcServer"
+	"snail/judger/grpcServer/proto"
 	"snail/judger/settings"
 	"snail/judger/zk"
 )
@@ -19,7 +23,17 @@ func main() {
 	defer dao.Close()
 	conn := zk.InitZK(settings.Conf.ZKConfig, settings.Conf.Host, settings.Conf.Port)
 	defer zk.Close(conn)
-	req := new(proto.NewSubmissionReq)
-	req.SubmissionId = 1
-	core.ProcessJudge(req)
+	listen, err := net.Listen("tcp", ":8970")
+	if err != nil {
+		log.Printf("fail to lisent: %v\n", err)
+		return
+	}
+	s := grpc.NewServer()
+	proto.RegisterJudgeServerServer(s, &application.JudgeServer{})
+	reflection.Register(s)
+	err = s.Serve(listen)
+	if err != nil {
+		log.Printf("failed to serve: %v", err)
+		return
+	}
 }

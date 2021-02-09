@@ -9,7 +9,8 @@ import (
 	"log"
 	"os"
 	"os/exec"
-	proto "snail/judger/grpcServer"
+	"snail/judger/grpcServer/proto"
+
 	"snail/judger/model"
 	"snail/judger/settings"
 	"strconv"
@@ -38,7 +39,7 @@ func ProcessJudge(req *proto.NewSubmissionReq) {
 	submission.ID = int(req.SubmissionId)
 	if err := model.GetOneSubmission(submission); err != nil {
 		log.Printf("Get submission failed: %v\n", err)
-		OnErrorOccurred(err.Error())
+		OnErrorOccurred(req.OriginIp, err.Error(), -500)
 		return
 	}
 	workPath, err := MakeWorkPlace(submission)
@@ -55,14 +56,15 @@ func ProcessJudge(req *proto.NewSubmissionReq) {
 	switch result {
 	case 0:
 		log.Printf("compile success.\n")
-		OnCompileFinished()
+		OnCompileFinished(req.OriginIp)
 	case -1:
 		log.Printf("compile failed.\n")
-		OnErrorOccurred(msg)
+		saveSubmission(submission, -1, -1, "-1", -3)
+		OnErrorOccurred(req.OriginIp, msg, -3)
 	}
 	if result == 0 {
-		msg := runJudge(submission, workPath)
-		OnAllCheckPointFinished(msg)
+		msg := runJudge(req, submission, workPath)
+		OnAllCheckPointFinished(req.OriginIp, msg)
 	}
 }
 
@@ -84,7 +86,7 @@ func compile(wordPath string) (result int, msg string) {
 	return 0, "编译成功"
 }
 
-func runJudge(submission *model.Submission, workPath string) (msg string) {
+func runJudge(req *proto.NewSubmissionReq, submission *model.Submission, workPath string) (msg string) {
 	queId := submission.ProblemId
 	checkPointList, err := model.GetCheckPointByProblemId(queId)
 	if err != nil {
@@ -111,7 +113,7 @@ func runJudge(submission *model.Submission, workPath string) (msg string) {
 		count += 1
 		scriptName, err := genCheckScript(index, language.RunCommand, language.ExeFileName, checkPoint.Input, question, workPath)
 		if err != nil {
-			OnErrorOccurred("执行第" + strconv.Itoa(index) + "个测试用例失败" + err.Error())
+			OnErrorOccurred(req.OriginIp, "初始化第"+strconv.Itoa(index)+"个测试用例失败"+err.Error(), -5001)
 			continue
 		}
 		result := workPath + "/result_" + strconv.Itoa(index) + ".txt"
@@ -126,17 +128,18 @@ func runJudge(submission *model.Submission, workPath string) (msg string) {
 		log.Printf("result of cmd: %v\n", out.String())
 		if err != nil {
 			log.Printf("run cmd error: %v\n", err)
-			OnErrorOccurred("执行第" + strconv.Itoa(index) + "个测试用例失败" + err.Error())
+			OnErrorOccurred(req.OriginIp, "执行第"+strconv.Itoa(index)+"个测试用例失败"+err.Error(), -5002)
 		}
 		ret, code, err := checkAnswer(result, checkPoint.Output)
 		if err != nil {
 			log.Printf("check answer failed: %v\n", err)
+			saveSubmission(submission, -1, -1, "-1", code)
 			return err.Error()
 		}
 		if code == 0 {
 			pass += 1
 		}
-		OnOneCheckPointFinished("执行第" + strconv.Itoa(index) + "个样例完成,结果:" + ret)
+		OnOneCheckPointFinished(req.OriginIp, "执行第"+strconv.Itoa(index)+"个样例完成,结果:"+ret)
 		addCostTime(timeLog, &totalTime)
 		fixMemory(memoryLog, &maxMemory)
 	}
@@ -167,9 +170,9 @@ func checkAnswer(resultPath string, output string) (msg string, code int, err er
 		if index == 0 {
 			switch str {
 			case "-1":
-				return "超出内存限制", -1, errors.New("-1")
+				return "超出时间限制", -1, errors.New("-1")
 			case "-2":
-				return "超出时间限制", -1, errors.New("-2")
+				return "超出内存限制", -2, errors.New("-2")
 			}
 		}
 		if err == io.EOF { //io.EOF 表示文件的末尾

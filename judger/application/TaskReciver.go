@@ -3,7 +3,7 @@ package application
 import (
 	"context"
 	"snail/judger/core"
-	proto "snail/judger/grpcServer"
+	"snail/judger/grpcServer/proto"
 )
 
 type JudgeServer struct {
