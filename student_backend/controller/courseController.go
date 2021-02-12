@@ -8,18 +8,18 @@ import (
 	"student_bakcend/logic"
 	"student_bakcend/models"
 	"student_bakcend/models/helper"
-	"student_bakcend/utils"
 	"student_bakcend/vo"
 )
 
 func JoinCourse(c *gin.Context) {
-	org, _ := c.Get("user")
-	student, err := utils.GetToken(org)
-	if err != nil {
-		log.Printf("Get token failed: %v\n", err)
-		c.JSON(http.StatusOK, vo.BadResponse(vo.ServerError))
-		return
-	}
+	//org, _ := c.Get("user")
+	//student, err := utils.GetToken(org)
+	//if err != nil {
+	//	log.Printf("Get token failed: %v\n", err)
+	//	c.JSON(http.StatusOK, vo.BadResponse(vo.ServerError))
+	//	return
+	//}
+	student := new(models.Student)
 	courseToStudent := new(models.CourseToStudent)
 	if err := c.BindJSON(&courseToStudent); err != nil {
 		log.Printf("course to student bind json failed: %v\n", err)

@@ -11,6 +11,11 @@ import (
 func JoinCourse(courseToStudent *models.CourseToStudent)(baseResponse *vo.BaseResponse){
 	baseResponse = new(vo.BaseResponse)
 	baseResponse.Code = vo.Success
+	if !isCourseExists(courseToStudent.CourseID){
+		baseResponse.Code = vo.Error
+		baseResponse.Msg = "course not exist"
+		return
+	}
 	if isCoursePrivate(courseToStudent.CourseID){
 		courseToStudent.IsValid = 0
 	}else{
@@ -22,7 +27,6 @@ func JoinCourse(courseToStudent *models.CourseToStudent)(baseResponse *vo.BaseRe
 		log.Printf("CourseToStudent service create course failed: %v\n", err)
 		return
 	}
-
 	return
 }
 
@@ -77,4 +81,13 @@ func isCoursePrivate(courseID int) bool {
 	}
 	fmt.Printf("course msg is:%v\n",course)
 	return course.IsPrivate == 1
+}
+
+func isCourseExists(courseID int)bool{
+	course := new(models.Course)
+	course.ID = courseID
+	if err := models.GetSingleCourse(course); err!=nil{
+		return false
+	}
+	return true
 }

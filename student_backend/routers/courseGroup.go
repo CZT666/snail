@@ -9,7 +9,7 @@ import (
 func courseGroup(engine *gin.Engine) {
 	courseID := "id"
 	group := engine.Group("/course")
-	group.Use(middleware.JWTAuthMiddleware())
+	//group.Use(middleware.JWTAuthMiddleware())
 	{
 		group.POST("/join",controller.JoinCourse)
 		group.GET("/list", controller.QueryCourseList)
