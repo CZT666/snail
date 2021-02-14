@@ -8,7 +8,6 @@ import (
 	"student_bakcend/logic"
 	"student_bakcend/models"
 	"student_bakcend/vo"
-	"student_bakcend/models/helper"
 )
 
 
@@ -36,15 +35,3 @@ func QueryBlogDetail(c *gin.Context) {
 	return
 }
 
-func SearchBlog(c *gin.Context)  {
-	searchName := c.Param("name")
-	pageRequest := helper.NewPageRequest()
-	if err := c.BindJSON(&pageRequest); err != nil {
-		log.Printf("Query course list bind json failed: %v\n", err)
-		c.JSON(http.StatusOK, vo.BadResponse(vo.ParamError))
-		return
-	}
-	baseResponse := logic.SearchBlog(pageRequest,searchName)
-	c.JSON(http.StatusOK, baseResponse)
-	return
-}

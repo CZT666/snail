@@ -42,16 +42,3 @@ func QueryBlogDetail(blog *models.Blog) (baseResponse *vo.BaseResponse) {
 	return
 }
 
-func SearchBlog(pageRequest *helper.PageRequest,searchName string) (baseResponse *vo.BaseResponse) {
-	baseResponse = new(vo.BaseResponse)
-	baseResponse.Code = vo.Success
-	blogList, total, err := models.GetSearchBlog(pageRequest,searchName)
-	if err != nil {
-		log.Printf("Query course list failed: %v\n", err)
-		baseResponse.Code = vo.ServerError
-		return
-	}
-	pageResponse := helper.NewPageResponse(total, blogList)
-	baseResponse.Data = pageResponse
-	return
-}
