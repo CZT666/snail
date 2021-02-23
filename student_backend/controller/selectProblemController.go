@@ -11,7 +11,7 @@ import (
 )
 
 func GetSelect(c *gin.Context) {
-	blog := c.Param("blogID")
+	blog := c.Param("blog_id")
 	if cast.ToInt64(blog) < 1{
 		log.Printf("param error")
 		c.JSON(http.StatusOK, vo.BadResponse(vo.ParamError))
@@ -24,7 +24,7 @@ func GetSelect(c *gin.Context) {
 
 func GetSelectScore(c *gin.Context){
 	answers := c.PostForm("answers")
-	blog := c.PostForm("blog")
+	blog := c.PostForm("blog_id")
 	org, _ := c.Get("user")
 	student, err := utils.GetToken(org)
 	if err != nil {

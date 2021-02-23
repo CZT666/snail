@@ -9,14 +9,14 @@ import (
 	"student_bakcend/vo"
 )
 
-func GetProblem(c *gin.Context) {
+func GetCode(c *gin.Context) {
 	blog := c.Param("blog_id")
 	if cast.ToInt64(blog) < 1{
 		log.Printf("param error")
 		c.JSON(http.StatusOK, vo.BadResponse(vo.ParamError))
 		return
 	}
-	baseResponse := logic.GetProblem(blog)
+	baseResponse := logic.GetCode(blog)
 	c.JSON(http.StatusOK, baseResponse)
 	return
 }
