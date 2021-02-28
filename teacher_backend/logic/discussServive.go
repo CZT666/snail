@@ -7,10 +7,10 @@ import (
 	"github.com/go-redis/redis/v8"
 	"github.com/spf13/cast"
 	"log"
-	"student_bakcend/dao"
-	"student_bakcend/models"
-	"student_bakcend/models/helper"
-	"student_bakcend/vo"
+	"snail/teacher_backend/dao"
+	"snail/teacher_backend/models"
+	"snail/teacher_backend/models/helper"
+	"snail/teacher_backend/vo"
 	"time"
 )
 
@@ -21,120 +21,85 @@ type RedPoint struct {
 	IsRed          bool
 }
 
-func AddQuestion(question *models.Question, user helper.User) (baseResponse *vo.BaseResponse) {
+type Wrapper struct {
+	redPoint []RedPoint
+	by  func(p, q *RedPoint) bool
+}
+
+func GetRedPoint(user helper.User) (baseResponse *vo.BaseResponse) {
 	baseResponse = new(vo.BaseResponse)
 	baseResponse.Code = vo.Success
-	//question.CreateBy = user.GetIdentity()
-	question.CreateBy = "canruichen"
-	question.CreateTime = time.Now()
-	if err := models.AddQuestion(question); err != nil {
-		log.Printf("discuss service add question failed: %v\n", err)
-		baseResponse.Code = vo.Error
-		baseResponse.Msg = "添加失败"
-	}
-
-	tempCourse := models.Course{ID: question.CourseID}
-	if err := models.GetSingleCourse(&tempCourse); err != nil {
-		log.Printf("discuss service get single course failed: %v\n", err)
-		baseResponse.Code = vo.Error
-		baseResponse.Msg = "查询失败"
-	}
-	RedPointKey := fmt.Sprintf(RedisRedPoint, tempCourse.CreateBy)
-	var teacherValues []RedPoint
-	teacherRedis, err := dao.RedisDB.Get(context.Background(), RedPointKey).Result()
+	//key := fmt.Sprintf(RedisRedPoint,user.GetIdentity())
+	key := fmt.Sprintf(RedisRedPoint,"1074596965@qq.com")
+	result, err := dao.RedisDB.Get(context.Background(), key).Result()
 	if err != nil && err != redis.Nil {
 		baseResponse.Code = vo.Error
-		baseResponse.Msg = "get redis of teacher values fail"
-		log.Printf("get redis of teacher values fail : %v\n", err)
+		baseResponse.Msg = "get redis of red point message values fail"
+		log.Printf("get redis of red point message values fail : %v\n", err)
 		return
 	}
-	if teacherRedis != "" {
-		if err := json.Unmarshal([]byte(teacherRedis), &teacherValues); err != nil {
+	var resultValue []RedPoint
+	if result != "" {
+		if err := json.Unmarshal([]byte(result), &resultValue); err != nil {
 			baseResponse.Code = vo.Error
-			baseResponse.Msg = "unmarshal teacher redis fail"
-			log.Printf("unmarshal teacher redis fail: %v\n", err)
+			baseResponse.Msg = "unmarshal result redis fail"
+			log.Printf("unmarshal result redis fail: %v\n", err)
 			return
 		}
 	}
-	teacherValues = append(teacherValues, RedPoint{Question: *question, DataVersion: -1, CurrentVersion: 0, IsRed: true})
-	value, err := json.Marshal(teacherValues)
-	if err != nil {
-		baseResponse.Code = vo.Error
-		baseResponse.Msg = "marshal value fail"
-		log.Printf("marshal value fail:: %v\n", err)
-		return
-	}
-	if _, err := dao.RedisDB.Set(context.Background(), RedPointKey, cast.ToString(value), 0).Result(); err != nil {
-		baseResponse.Code = vo.Error
-		baseResponse.Msg = "redis set marshal data fail"
-		log.Printf("redis set marshal data fail:: %v\n", err)
-		return
-	}
-	tempAssistance := models.Assistance{
-		CourseID: question.CourseID,
-	}
-	allAssistance, err := models.GetAssistance(&tempAssistance)
-	for i := range allAssistance {
-		student := models.Student{StudentID: allAssistance[i].StuID}
-		if err := models.GetSingleStudent(&student); err != nil {
-			baseResponse.Code = vo.Error
-			baseResponse.Msg = "discuss get single student fail"
-			log.Printf("discuss get single student fail: %v\n", err)
-			return
-		}
-		fmt.Printf("student msg : %v\n",student)
-		RedPointKey = fmt.Sprintf(RedisRedPoint, student.StudentID)
-		var assistanceValues []RedPoint
-		assistanceRedis, err := dao.RedisDB.Get(context.Background(), RedPointKey).Result()
-		if err != nil && err != redis.Nil {
-			baseResponse.Code = vo.Error
-			baseResponse.Msg = "get assistance redis of teacher values fail"
-			log.Printf("get assistance redis of teacher values fail : %v\n", err)
-			return
-		}
-		if assistanceRedis != "" {
-			if err := json.Unmarshal([]byte(assistanceRedis), &assistanceValues); err != nil {
-				baseResponse.Code = vo.Error
-				baseResponse.Msg = "unmarshal assistance redis fail"
-				log.Printf("unmarshal assistance redis fail: %v\n", err)
-				return
-			}
-		}
-		assistanceValues = append(assistanceValues, RedPoint{Question: *question, DataVersion: -1, CurrentVersion: 0, IsRed: true})
-		fmt.Printf("assistanceValues is :%v\n",assistanceValues)
-		value, err := json.Marshal(assistanceValues)
-		if err != nil {
-			baseResponse.Code = vo.Error
-			baseResponse.Msg = "assistance marshal value fail"
-			log.Printf("assistance marshal value fail:: %v\n", err)
-			return
-		}
-		if _, err := dao.RedisDB.Set(context.Background(), RedPointKey, cast.ToString(value), 0).Result(); err != nil {
-			baseResponse.Code = vo.Error
-			baseResponse.Msg = "redis set marshal data fail"
-			log.Printf("redis set marshal data fail:: %v\n", err)
+	for i := range resultValue{
+		if resultValue[i].IsRed{
+			baseResponse.Data = 1
 			return
 		}
 	}
+	baseResponse.Data = 0
 	return
 }
 
-func GetAllQuestion(courseID string, pageRequest *helper.PageRequest) (baseResponse *vo.BaseResponse) {
+func GetAllQuestion(user helper.User, pageRequest *helper.PageRequest) (baseResponse *vo.BaseResponse) {
 	baseResponse = new(vo.BaseResponse)
 	baseResponse.Code = vo.Success
-	tempQuestion := models.Question{CourseID: cast.ToInt(courseID)}
-	result, total, err := models.GetQuestion(&tempQuestion, pageRequest)
-	if err != nil {
-		log.Printf("queans service get all question failed: %v\n", err)
+	//key := fmt.Sprintf(RedisRedPoint,user.GetIdentity())
+	key := fmt.Sprintf(RedisRedPoint,"1074596965@qq.com")
+	result, err := dao.RedisDB.Get(context.Background(), key).Result()
+	if err != nil && err != redis.Nil {
 		baseResponse.Code = vo.Error
-		baseResponse.Msg = "查询失败"
+		baseResponse.Msg = "get redis of red point message values fail"
+		log.Printf("get redis of red point message values fail : %v\n", err)
+		return
 	}
-	pageResponse := helper.NewPageResponse(total, result)
-	baseResponse.Data = pageResponse
+	var resultValue,res []RedPoint
+	total := 0
+	if result != "" {
+		if err := json.Unmarshal([]byte(result), &resultValue); err != nil {
+			baseResponse.Code = vo.Error
+			baseResponse.Msg = "unmarshal result redis fail"
+			log.Printf("unmarshal result redis fail: %v\n", err)
+			return
+		}
+		var resultTrue,resultFalse []RedPoint
+		for i := range resultValue{
+			if resultValue[i].CurrentVersion != resultValue[i].DataVersion{
+				resultValue[i].IsRed = true
+			}else{
+				resultValue[i].IsRed = false
+			}
+			if resultValue[i].IsRed{
+				resultTrue = append(resultTrue,resultValue[i])
+			}else{
+				resultFalse =append(resultFalse,resultValue[i])
+			}
+			total +=1
+		}
+		res = append(res, resultTrue...)
+		res = append(res, resultFalse...)
+	}
+	baseResponse.Data = helper.NewPageResponse(total, res)
 	return
 }
 
-func GetSingleQuestion(questionID string) (baseResponse *vo.BaseResponse) {
+func GetSingleQuestion(questionID string,user helper.User) (baseResponse *vo.BaseResponse) {
 	baseResponse = new(vo.BaseResponse)
 	baseResponse.Code = vo.Success
 	question := models.Question{ID: cast.ToInt(questionID)}
@@ -143,21 +108,44 @@ func GetSingleQuestion(questionID string) (baseResponse *vo.BaseResponse) {
 		baseResponse.Code = vo.Error
 		baseResponse.Msg = "查询失败"
 	}
-	baseResponse.Data = question
-	return
-}
-
-func SearchQuestion(pageRequest *helper.PageRequest, searchName string, courseID string) (baseResponse *vo.BaseResponse) {
-	baseResponse = new(vo.BaseResponse)
-	baseResponse.Code = vo.Success
-	courseList, total, err := models.GetSearchQuestion(pageRequest, searchName, courseID)
-	if err != nil {
-		log.Printf("search question list failed: %v\n", err)
-		baseResponse.Code = vo.ServerError
+	//key := fmt.Sprintf(RedisRedPoint,user.GetIdentity())
+	key := fmt.Sprintf(RedisRedPoint,"1074596965@qq.com")
+	result, err := dao.RedisDB.Get(context.Background(), key).Result()
+	if err != nil && err != redis.Nil {
+		baseResponse.Code = vo.Error
+		baseResponse.Msg = "get redis of red point message values fail"
+		log.Printf("get redis of red point message values fail : %v\n", err)
 		return
 	}
-	pageResponse := helper.NewPageResponse(total, courseList)
-	baseResponse.Data = pageResponse
+	var resultValue []RedPoint
+	if result != "" {
+		if err := json.Unmarshal([]byte(result), &resultValue); err != nil {
+			baseResponse.Code = vo.Error
+			baseResponse.Msg = "unmarshal result redis fail"
+			log.Printf("unmarshal result redis fail: %v\n", err)
+			return
+		}
+		for i := range resultValue{
+			if resultValue[i].Question.ID == cast.ToInt(questionID){
+				resultValue[i].IsRed = false
+				resultValue[i].DataVersion = resultValue[i].CurrentVersion
+			}
+		}
+		res,err:= json.Marshal(resultValue)
+		if err!= nil {
+			baseResponse.Code = vo.Error
+			baseResponse.Msg = "marshal result redis fail"
+			log.Printf("marshal result redis fail: %v\n", err)
+			return
+		}
+		if _, err := dao.RedisDB.Set(context.Background(), key, cast.ToString(res), 0).Result(); err != nil {
+			baseResponse.Code = vo.Error
+			baseResponse.Msg = "redis set marshal res fail"
+			log.Printf("redis set marshal res fail:: %v\n", err)
+			return
+		}
+	}
+	baseResponse.Data = question
 	return
 }
 
@@ -175,6 +163,7 @@ func AddAnswer(answer *models.Answer, user helper.User) (baseResponse *vo.BaseRe
 	question := models.Question{
 		ID: answer.QuestionID,
 	}
+	fmt.Printf("question value:%v\n",question)
 	if err := models.GetSingleQuestion(&question);err!=nil{
 		baseResponse.Code = vo.Error
 		baseResponse.Msg = "get single question  fail"
@@ -183,6 +172,12 @@ func AddAnswer(answer *models.Answer, user helper.User) (baseResponse *vo.BaseRe
 	}
 	course := models.Course{
 		ID: question.CourseID,
+	}
+	if err := models.GetSingleCourse(&course);err!=nil{
+		baseResponse.Code = vo.Error
+		baseResponse.Msg = "get single course  fail"
+		log.Printf("get single course fail : %v\n", err)
+		return
 	}
 	RedPointKey := fmt.Sprintf(RedisRedPoint,course.CreateBy)
 	var teacherValues []RedPoint

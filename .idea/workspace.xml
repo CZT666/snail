@@ -1,11 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="0404aaa5-3ae1-4166-8090-341e21f5955a" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/student_backend/controller/courseController.go" beforeDir="false" afterPath="$PROJECT_DIR$/student_backend/controller/courseController.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/student_backend/logic/courseService.go" beforeDir="false" afterPath="$PROJECT_DIR$/student_backend/logic/courseService.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/student_backend/routers/blogGroup.go" beforeDir="false" afterPath="$PROJECT_DIR$/student_backend/routers/blogGroup.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/student_backend/routers/courseGroup.go" beforeDir="false" afterPath="$PROJECT_DIR$/student_backend/routers/courseGroup.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/teacher_backend/controller/discussController.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/teacher_backend/logic/const.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/teacher_backend/logic/discussServive.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/teacher_backend/models/discussModel.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/teacher_backend/routers/discussGroup.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/student_backend/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/student_backend/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/student_backend/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/student_backend/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/student_backend/logic/const.go" beforeDir="false" afterPath="$PROJECT_DIR$/student_backend/logic/const.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/student_backend/logic/discussService.go" beforeDir="false" afterPath="$PROJECT_DIR$/student_backend/logic/discussService.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/student_backend/routers/discussGroup.go" beforeDir="false" afterPath="$PROJECT_DIR$/student_backend/routers/discussGroup.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/student_backend/routers/routers.go" beforeDir="false" afterPath="$PROJECT_DIR$/student_backend/routers/routers.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/teacher_backend/conf/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/teacher_backend/conf/config.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/teacher_backend/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/teacher_backend/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/teacher_backend/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/teacher_backend/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/teacher_backend/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/teacher_backend/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/teacher_backend/routers/routers.go" beforeDir="false" afterPath="$PROJECT_DIR$/teacher_backend/routers/routers.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,6 +40,12 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="JsFlowSettings">
+    <service-enabled>true</service-enabled>
+    <exe-path />
+    <other-services-enabled>true</other-services-enabled>
+    <auto-save>true</auto-save>
+  </component>
   <component name="ProjectId" id="1jMRSxsIuwIVVdW5t6XDI7xcoY9" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -39,16 +61,16 @@
     <property name="configurable.Project.GOPATH.is.expanded" value="true" />
     <property name="go.import.settings.migrated" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/student_backend/routers" />
-    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/teacher_backend/models" />
+    <property name="settings.editor.selected.configurable" value="go.vgo" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\GoCode\src\snail\student_backend\routers" />
-      <recent name="D:\GoCode\src\snail\student_backend\logic" />
-      <recent name="D:\GoCode\src\snail\student_backend\controller" />
-      <recent name="D:\GoCode\src\snail\student_backend" />
-      <recent name="D:\GoCode\src\snail\student_backend\common" />
+      <recent name="D:\GoCode\src\snail\teacher_backend\models" />
+      <recent name="D:\GoCode\src\snail\teacher_backend\logic" />
+      <recent name="D:\GoCode\src\snail\teacher_backend\routers" />
+      <recent name="D:\GoCode\src\snail\student_backend\models" />
+      <recent name="D:\GoCode\src\snail\student_backend\models\helper" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -67,18 +89,10 @@
     </environment>
   </component>
   <component name="WindowStateProjectService">
-    <state x="96" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1603764288839">
-      <screen x="0" y="0" width="1280" height="680" />
-    </state>
-    <state x="96" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1280.680@0.0.1280.680" timestamp="1603764288839" />
     <state x="244" y="0" key="CommitChangelistDialog2" timestamp="1606610027594">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="244" y="0" key="CommitChangelistDialog2/0.0.1280.680@0.0.1280.680" timestamp="1606610027594" />
-    <state x="528" y="200" key="EnvironmentVariablesDialog" timestamp="1603676793819">
-      <screen x="0" y="0" width="1280" height="680" />
-    </state>
-    <state x="528" y="200" key="EnvironmentVariablesDialog/0.0.1280.680@0.0.1280.680" timestamp="1603676793819" />
     <state x="421" y="95" key="FileChooserDialogImpl" timestamp="1609551821342">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
@@ -87,22 +101,22 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="121" y="50" key="MergeDialog/0.0.1280.680@0.0.1280.680" timestamp="1606272275509" />
-    <state x="142" y="0" key="SettingsEditor" timestamp="1608356435696">
+    <state x="142" y="0" key="SettingsEditor" timestamp="1613182282332">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="142" y="0" key="SettingsEditor/0.0.1280.680@0.0.1280.680" timestamp="1608356435696" />
-    <state x="233" y="73" key="Vcs.Push.Dialog.v2" timestamp="1606610940105">
+    <state x="142" y="0" key="SettingsEditor/0.0.1280.680@0.0.1280.680" timestamp="1613182282332" />
+    <state x="233" y="73" key="Vcs.Push.Dialog.v2" timestamp="1613296992688">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="233" y="73" key="Vcs.Push.Dialog.v2/0.0.1280.680@0.0.1280.680" timestamp="1606610940105" />
+    <state x="233" y="73" key="Vcs.Push.Dialog.v2/0.0.1280.680@0.0.1280.680" timestamp="1613296992688" />
     <state x="448" y="253" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1610376996144">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="448" y="253" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1280.680@0.0.1280.680" timestamp="1610376996144" />
-    <state x="303" y="1" width="672" height="678" key="search.everywhere.popup" timestamp="1608952856875">
+    <state x="303" y="1" width="672" height="678" key="search.everywhere.popup" timestamp="1614481292620">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="303" y="1" width="672" height="678" key="search.everywhere.popup/0.0.1280.680@0.0.1280.680" timestamp="1608952856875" />
+    <state x="303" y="1" width="672" height="678" key="search.everywhere.popup/0.0.1280.680@0.0.1280.680" timestamp="1614481292620" />
     <state x="363" y="252" key="vcs.readOnlyHandler.ReadOnlyStatusDialog" timestamp="1609574520874">
       <screen x="0" y="0" width="1280" height="680" />
     </state>

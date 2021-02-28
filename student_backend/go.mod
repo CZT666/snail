@@ -10,6 +10,7 @@ require (
 	github.com/jinzhu/gorm v1.9.16
 	github.com/nsqio/go-nsq v1.0.8
 	github.com/spf13/cast v1.3.1
+	github.com/tealeg/xlsx v1.0.5 // indirect
 	gopkg.in/yaml.v2 v2.4.0
 
 )

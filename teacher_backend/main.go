@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"snail/teacher_backend/dao"
 	"snail/teacher_backend/routers"
 	"snail/teacher_backend/settings"
@@ -16,11 +17,11 @@ func main() {
 		return
 	}
 	defer dao.Close()
-	//err = dao.InitRedis(settings.Conf.RedisConfig)
-	//if err != nil {
-	//	log.Printf("Init redis failed, err: %v", err)
-	//	return
-	//}
+	err = dao.InitRedis(settings.Conf.RedisConfig)
+	if err != nil {
+		log.Printf("Init redis failed, err: %v", err)
+		return
+	}
 	//defer dao.CloseRedis()
 	//err = dao.InitResetPwdNSQ(settings.Conf.NSQConfig)
 	//if err != nil {
