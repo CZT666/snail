@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:snail" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="80f57659-cb34-4625-a938-6cc324840394" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../judger/client/Dockerfile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../judger/conf/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/grpcServer/proto/JudgerClient.pb.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/grpcServer/proto/JudgerServer.pb.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/judger/SendReq.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/zk/init.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../teacher_backend/template/选择题题库模板.xlsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../judger/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/../judger/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../judger/application/ResultSender.go" beforeDir="false" afterPath="$PROJECT_DIR$/../judger/core/ResultSender.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../judger/application/TaskReciver.go" beforeDir="false" afterPath="$PROJECT_DIR$/../judger/core/TaskReciver.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../judger/client/judger/SendReq.go" beforeDir="false" afterPath="$PROJECT_DIR$/../judger/client/judger/SendReq.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../judger/client/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/../judger/client/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../judger/core/JudgerDispatcher.go" beforeDir="false" afterPath="$PROJECT_DIR$/../judger/core/JudgerDispatcher.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../judger/core/Processor.go" beforeDir="false" afterPath="$PROJECT_DIR$/../judger/core/Processor.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../judger/core/ScriptMaker.go" beforeDir="false" afterPath="$PROJECT_DIR$/../judger/core/ScriptMaker.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../judger/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/../judger/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../judger/model/CodeProblem.go" beforeDir="false" afterPath="$PROJECT_DIR$/../judger/model/CodeProblem.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../judger/settings/setting.go" beforeDir="false" afterPath="$PROJECT_DIR$/../judger/settings/setting.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../teacher_backend/conf/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../teacher_backend/conf/config.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../teacher_backend/controller/courseController.go" beforeDir="false" afterPath="$PROJECT_DIR$/../teacher_backend/controller/courseController.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../teacher_backend/controller/selectProblemController.go" beforeDir="false" afterPath="$PROJECT_DIR$/../teacher_backend/controller/selectProblemController.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../teacher_backend/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/../teacher_backend/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../teacher_backend/logic/blogService.go" beforeDir="false" afterPath="$PROJECT_DIR$/../teacher_backend/logic/blogService.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../teacher_backend/logic/courseService.go" beforeDir="false" afterPath="$PROJECT_DIR$/../teacher_backend/logic/courseService.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../teacher_backend/logic/teacherService.go" beforeDir="false" afterPath="$PROJECT_DIR$/../teacher_backend/logic/teacherService.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../teacher_backend/models/blogModel.go" beforeDir="false" afterPath="$PROJECT_DIR$/../teacher_backend/models/blogModel.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../teacher_backend/models/courseModel.go" beforeDir="false" afterPath="$PROJECT_DIR$/../teacher_backend/models/courseModel.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../teacher_backend/routers/accessGroup.go" beforeDir="false" afterPath="$PROJECT_DIR$/../teacher_backend/routers/accessGroup.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../teacher_backend/routers/blogGroup.go" beforeDir="false" afterPath="$PROJECT_DIR$/../teacher_backend/routers/blogGroup.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../teacher_backend/routers/courseGroup.go" beforeDir="false" afterPath="$PROJECT_DIR$/../teacher_backend/routers/courseGroup.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../teacher_backend/routers/problemGroup.go" beforeDir="false" afterPath="$PROJECT_DIR$/../teacher_backend/routers/problemGroup.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../teacher_backend/routers/routers.go" beforeDir="false" afterPath="$PROJECT_DIR$/../teacher_backend/routers/routers.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../teacher_backend/vo/accessVO.go" beforeDir="false" afterPath="$PROJECT_DIR$/../teacher_backend/vo/accessVO.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../teacher_backend/vo/blogVO.go" beforeDir="false" afterPath="$PROJECT_DIR$/../teacher_backend/vo/blogVO.go" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="GOROOT" path="D:\Go" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="GoLibraries">
+    <option name="indexEntireGoPath" value="false" />
+  </component>
+  <component name="ProjectId" id="1omcvEyXCyyXTNiGjPztFYmSvin" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="go.import.settings.migrated" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\GoWorks\src\snail\judgerClient" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VgoProject">
+    <integration-enabled>true</integration-enabled>
+    <environment>
+      <map>
+        <entry key="GOPROXY" value="https://goproxy.io" />
+      </map>
+    </environment>
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="233" y="4" key="#Deployment" timestamp="1614499877501">
+      <screen x="0" y="0" width="1280" height="689" />
+    </state>
+    <state x="233" y="4" key="#Deployment/0.0.1280.689@0.0.1280.689" timestamp="1614499877501" />
+  </component>
+</project>
