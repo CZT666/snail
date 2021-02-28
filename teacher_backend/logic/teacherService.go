@@ -37,6 +37,11 @@ func TeacherLogin(user *vo.LoginRequest) (baseResponse *vo.BaseResponse) {
 	baseResponse.Code = vo.Success
 	account := user.Account
 	pwd := user.Pwd
+	if account == "" || pwd == "" {
+		baseResponse.Code = vo.Error
+		baseResponse.Msg = "账号密码不能为空"
+		return
+	}
 	log.Printf("account: %v pwd: %v\n", account, pwd)
 	teacher, ok := isTeacher(account, pwd)
 	if ok {
@@ -47,7 +52,11 @@ func TeacherLogin(user *vo.LoginRequest) (baseResponse *vo.BaseResponse) {
 			baseResponse.Code = vo.TokenError
 			return
 		}
-		baseResponse.Data = tokenString
+		rsp := new(vo.LoginRespone)
+		rsp.UserType = 1
+		rsp.Teacher = teacher
+		rsp.Token = tokenString
+		baseResponse.Data = rsp
 		return
 	} else {
 		student, ok := isAssistance(account, pwd)
@@ -59,12 +68,16 @@ func TeacherLogin(user *vo.LoginRequest) (baseResponse *vo.BaseResponse) {
 				baseResponse.Code = vo.TokenError
 				return
 			}
-			baseResponse.Data = tokenString
+			rsp := new(vo.LoginRespone)
+			rsp.UserType = 2
+			rsp.Assistance = student
+			rsp.Token = tokenString
+			baseResponse.Data = rsp
 			return
 		}
 	}
 	baseResponse.Code = vo.Error
-	baseResponse.Code = "账号或密码错误"
+	baseResponse.Msg = "账号或密码错误"
 	return
 }
 

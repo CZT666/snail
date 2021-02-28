@@ -4,19 +4,32 @@ workPort: 8080
 
 # mysql
 mysql:
-  host: 127.0.0.1
+  host: 1.15.123.133
   port: 3306
-  user: root
-  pwd: root
+  user: writer
+  pwd: snail2021
   db: snail
 
 # nsq
 nsqProducer:
-  host: 127.0.0.1
+  host: 1.15.123.133
   port: 4150
 
 nsqConsumer:
-  host: 127.0.0.1
+  host: 1.15.123.133
   port: 4161
   topic: reset_pwd
   channel: snail_teacher_reset_backend
+
+# mail
+mail:
+  account: 348673210@qq.com
+  pwd: ysocevomybqmcaai
+  host: smtp.qq.com
+  port: 465
+
+redis:
+  host: 127.0.0.1
+  port: 6379
+  db: 0
+  poolSize: 100

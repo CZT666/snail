@@ -4,8 +4,8 @@ import (
 	"context"
 	"google.golang.org/grpc"
 	"log"
-	"snail/judger/client/zk"
-	"snail/judger/grpcServer/proto"
+	"snail/judgerClient/grpcServer/proto"
+	"snail/judgerClient/zk"
 )
 
 func getServer() string {
@@ -17,14 +17,15 @@ func getServer() string {
 }
 
 func NewSubmission(submissionId int, originIp string) error {
-	//address := getServer()
-	address := "127.0.0.1:8081"
-	conn, err := grpc.Dial(address)
+	address := getServer()
+	// address := "127.0.0.1:8081"
+	conn, err := grpc.Dial(address, grpc.WithInsecure())
 	if err != nil {
 		log.Printf("connnect server failed: %v\n", err)
 		return err
 	}
 	defer conn.Close()
+	log.Print("connect")
 	client := proto.NewJudgeServerClient(conn)
 	req := new(proto.NewSubmissionReq)
 	req.SubmissionId = int32(submissionId)
@@ -34,6 +35,6 @@ func NewSubmission(submissionId int, originIp string) error {
 		log.Printf("new submission failed: %v\n", err)
 		return err
 	}
-	log.Printf("result of new submission: %v\n", ret)
+	log.Printf("result of new submission: %v\n", ret.Result)
 	return nil
 }

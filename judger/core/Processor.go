@@ -4,13 +4,10 @@ import (
 	"bufio"
 	"bytes"
 	"errors"
-	"fmt"
-	"io"
 	"log"
 	"os"
 	"os/exec"
 	"snail/judger/grpcServer/proto"
-
 	"snail/judger/model"
 	"snail/judger/settings"
 	"strconv"
@@ -26,6 +23,7 @@ func NewTask(req *proto.NewSubmissionReq) {
 }
 
 func RunJudgeTask() {
+	log.Printf("core task: %v\n", settings.Conf.CoreTask)
 	go func() {
 		for {
 			req := <-taskQueue
@@ -52,6 +50,12 @@ func ProcessJudge(req *proto.NewSubmissionReq) {
 		log.Printf("gen script failed: %v\n", err)
 		return
 	}
+	if submission.LanguageId == 3 {
+		ret := runJudge(req, submission, workPath)
+		OnAllCheckPointFinished(req.OriginIp, ret)
+		clearWorkPlace(workPath)
+		return
+	}
 	result, msg := compile(workPath)
 	switch result {
 	case 0:
@@ -61,15 +65,15 @@ func ProcessJudge(req *proto.NewSubmissionReq) {
 		log.Printf("compile failed.\n")
 		saveSubmission(submission, -1, -1, "-1", -3)
 		OnErrorOccurred(req.OriginIp, msg, -3)
+		return
 	}
-	if result == 0 {
-		msg := runJudge(req, submission, workPath)
-		OnAllCheckPointFinished(req.OriginIp, msg)
-	}
+	ret := runJudge(req, submission, workPath)
+	OnAllCheckPointFinished(req.OriginIp, ret)
+	clearWorkPlace(workPath)
 }
 
 func compile(wordPath string) (result int, msg string) {
-	command := wordPath + "/run.sh"
+	command := wordPath + "/compile.sh"
 	log.Printf("compile commond: %v\n", command)
 	cmd := exec.Command("sh", command)
 	var out bytes.Buffer
@@ -131,6 +135,7 @@ func runJudge(req *proto.NewSubmissionReq, submission *model.Submission, workPat
 			OnErrorOccurred(req.OriginIp, "执行第"+strconv.Itoa(index)+"个测试用例失败"+err.Error(), -5002)
 		}
 		ret, code, err := checkAnswer(result, checkPoint.Output)
+		log.Printf("code of run judge: %v\n", code)
 		if err != nil {
 			log.Printf("check answer failed: %v\n", err)
 			saveSubmission(submission, -1, -1, "-1", code)
@@ -162,11 +167,12 @@ func checkAnswer(resultPath string, output string) (msg string, code int, err er
 		return "no result", -1, err
 	}
 	defer result.Close()
-	reader := bufio.NewReader(result)
 	index := 0
 	var stringBuilder strings.Builder
-	for {
-		str, err := reader.ReadString('\n') //读到一个换行就结束
+	scanner := bufio.NewScanner(result)
+	scanner.Split(bufio.ScanLines)
+	for scanner.Scan() {
+		str := scanner.Text()
 		if index == 0 {
 			switch str {
 			case "-1":
@@ -175,14 +181,11 @@ func checkAnswer(resultPath string, output string) (msg string, code int, err er
 				return "超出内存限制", -2, errors.New("-2")
 			}
 		}
-		if err == io.EOF { //io.EOF 表示文件的末尾
-			break
-		}
-		stringBuilder.WriteString(str)
-		fmt.Print(str)
+		stringBuilder.WriteString(str + "\n")
 		index++
 	}
-	if stringBuilder.String() == output {
+	log.Printf("result: %v\n", stringBuilder.String())
+	if strings.Trim(stringBuilder.String(), "\n") == strings.Trim(output, "\n") {
 		return "答案正确", 0, nil
 	} else {
 		return "答案错误", -1, nil
@@ -195,15 +198,15 @@ func addCostTime(timeLogPath string, totalTime *int) {
 		log.Printf("read time file failed: %v\n", err)
 	}
 	defer result.Close()
-	reader := bufio.NewReader(result)
+	scanner := bufio.NewScanner(result)
+	scanner.Split(bufio.ScanLines)
 	last := ""
-	for {
-		str, err := reader.ReadString('\n') //读到一个换行就结束
-		if err == io.EOF {                  //io.EOF 表示文件的末尾
-			break
-		}
-		fmt.Print(str)
+	for scanner.Scan() {
+		str := scanner.Text()
 		last = strings.Trim(str, "\n")
+	}
+	if (last == "") {
+		return
 	}
 	ret, err := strconv.Atoi(last)
 	if err != nil {
@@ -219,13 +222,10 @@ func fixMemory(memoryLogPath string, maxMemory *int) {
 		return
 	}
 	defer result.Close()
-	reader := bufio.NewReader(result)
-	for {
-		str, err := reader.ReadString('\n') //读到一个换行就结束
-		if err == io.EOF {                  //io.EOF 表示文件的末尾
-			break
-		}
-		fmt.Print(str)
+	scanner := bufio.NewScanner(result)
+	scanner.Split(bufio.ScanLines)
+	for scanner.Scan() {
+		str := scanner.Text()
 		tmp, err := strconv.Atoi(strings.Trim(str, "\n"))
 		if err != nil {
 			log.Printf("convert string failed: %v\n", err)
@@ -245,5 +245,13 @@ func saveSubmission(submission *model.Submission, costTime int, memory int, pass
 	err := model.UpdateSubmission(submission)
 	if err != nil {
 		log.Printf("save submission failed: %v\n", err)
+	}
+}
+
+func clearWorkPlace(workPath string) {
+	log.Printf("clear work place %v\n", workPath)
+	err := os.RemoveAll(workPath)
+	if err != nil {
+		log.Printf("clear work place failed: %v\n", err)
 	}
 }

@@ -3,12 +3,13 @@ package main
 import (
 	"context"
 	"fmt"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
 	"log"
 	"net"
-	"snail/judger/client/judger"
-	"snail/judger/grpcServer/proto"
+	"snail/judgerClient/grpcServer/proto"
+	"snail/judgerClient/judger"
+
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 )
 
 type server struct {
@@ -17,15 +18,19 @@ type server struct {
 func (receiver *server) SendMessage(ctx context.Context, req *proto.SendMessageReq) (*proto.SendMessageRsp, error) {
 	// TODO 具体实现
 	fmt.Printf("req: %v\n", req)
-	return nil, nil
+	rsp := new(proto.SendMessageRsp)
+	rsp.Result = 0
+	return rsp, nil
 }
 
-func main() {
-	listen, err := net.Listen("tcp", ":8972")
+func initServer() {
+	fmt.Print("hello\n")
+	listen, err := net.Listen("tcp", ":9090")
 	if err != nil {
 		log.Printf("fail to lisent: %v\n", err)
 		return
 	}
+	fmt.Print("listen\n")
 	s := grpc.NewServer()
 	proto.RegisterJudgeClientServer(s, &server{})
 	reflection.Register(s)
@@ -34,5 +39,13 @@ func main() {
 		log.Printf("failed to serve: %v", err)
 		return
 	}
+}
+
+func main() {
+	go initServer()
+	fmt.Print("start...\n")
 	judger.NewSubmission(1, "127.0.0.1:9090")
+	fmt.Print("end...\n")
+	var tmp string
+	fmt.Scanln(&tmp)
 }

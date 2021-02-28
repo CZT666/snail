@@ -6,7 +6,7 @@ ENV GO111MODULE=on \
     GOARCH=amd64 \
 	GOPROXY="https://goproxy.io/,direct"
 
-WORKDIR /home/snail/judger
+WORKDIR /home/snail/client
 
 COPY . .
 
@@ -14,11 +14,8 @@ RUN go build -o app .
 
 WORKDIR /dist
 
-RUN cp /home/snail/judger/app .
+RUN cp /home/snail/client/app .
 
-RUN mkdir conf
-RUN cp /home/snail/judger/conf/config.yaml ./conf/config.yaml
-
-EXPOSE 8081
+EXPOSE 8082
 
 CMD ["/dist/app"]

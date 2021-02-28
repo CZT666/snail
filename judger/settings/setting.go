@@ -14,6 +14,7 @@ type Config struct {
 	Host         string `yaml:"host"`
 	Port         string `yaml:"port"`
 	MaxTask      int    `yaml:"maxTask"`
+	CoreTask int `yaml:"coreTask"`
 	*MySQLConfig `yaml:"mysql"`
 	*ZKConfig    `yaml:"zk"`
 }
@@ -41,7 +42,7 @@ func Init() {
 	fileName := filepath.Join(basePath, "conf", "config.yaml")
 	yamlFile, err := ioutil.ReadFile(fileName)
 	if err != nil {
-		fmt.Println("load config file error.")
+		fmt.Printf("load config file error: %v\n", err)
 	}
 	err = yaml.Unmarshal(yamlFile, Conf)
 	if err != nil {

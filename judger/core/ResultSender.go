@@ -1,4 +1,4 @@
-package application
+package core
 
 import (
 	"context"
@@ -8,7 +8,7 @@ import (
 )
 
 func SendMessage(address string, msg string, code int) {
-	conn, err := grpc.Dial(address)
+	conn, err := grpc.Dial(address, grpc.WithInsecure())
 	if err != nil {
 		log.Printf("init connect failed: %v\n", err)
 		return
@@ -23,6 +23,5 @@ func SendMessage(address string, msg string, code int) {
 		log.Printf("send message back error: %v\n", err)
 		return
 	}
-	log.Printf("rsp of send message: %v\n", rsp)
-	return
+	log.Printf("rsp of send message: %v\n", rsp.Result)
 }

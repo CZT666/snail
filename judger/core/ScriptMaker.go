@@ -20,6 +20,9 @@ func GenScript(submission *model.Submission, workPath string) error {
 		log.Printf("gen code file failed: %v\n", err)
 		return err
 	}
+	if submission.LanguageId == 3 {
+		return nil
+	}
 	err = genCompileSh(fileName, language, workPath)
 	if err != nil {
 		log.Printf("gen run sh failed: %v\n", err)
@@ -34,6 +37,10 @@ func genCode(code string, language *model.Language, workPath string) (string, er
 	switch language.Name {
 	case "Java":
 		fileName = "Main.java"
+	case "Go":
+		fileName = "main.go"
+	case "Python":
+		fileName = "main.py"
 	}
 	filePath := workPath + "/" + fileName
 	file, err := os.Create(filePath)
@@ -53,8 +60,9 @@ func genCode(code string, language *model.Language, workPath string) (string, er
 func genCompileSh(fileName string, language *model.Language, workPath string) error {
 	stringBuilder := new(strings.Builder)
 	stringBuilder.WriteString("#!/bin/bash\n")
+	stringBuilder.WriteString("cd " + workPath + "\n")
 	stringBuilder.WriteString(language.CompileCommand)
-	stringBuilder.WriteString(" " + fileName + "\n")
+	stringBuilder.WriteString(" " + workPath + "/" + fileName + "\n")
 	log.Printf(stringBuilder.String())
 	filePath := workPath + "/compile.sh"
 	file, err := os.Create(filePath)
@@ -89,13 +97,21 @@ func genCheckScript(index int, runCommand string, exeFileName string, input stri
 	var stringBuilder strings.Builder
 	stringBuilder.WriteString("#!/bin/bash\nmaxTime=" + strconv.Itoa(problem.TimeLimit) + "\nmaxMemory=" +
 		strconv.Itoa(problem.MemoryLimit) + "\ncIndex=" + strconv.Itoa(index) + "\n")
+	stringBuilder.WriteString("touch " + workPath +"/result_${cIndex}.txt\n")
+	stringBuilder.WriteString("touch " + workPath +"/memory_log_${cIndex}.txt\n")
+	stringBuilder.WriteString("touch " + workPath +"/time_log_${cIndex}.txt\n")
 	stringBuilder.WriteString("source " + watchFileName + " $$ $maxTime $maxMemory $cIndex &\n")
 	stringBuilder.WriteString("chipid=$!\n")
-	stringBuilder.WriteString(runCommand + " " + exeFileName)
+	stringBuilder.WriteString("cd " + workPath + "\n")
+	if runCommand != "" {
+		stringBuilder.WriteString(runCommand + " " + exeFileName)
+	} else {
+		stringBuilder.WriteString("./" + exeFileName)
+	}
 	for _, param := range strings.Split(input, ",") {
 		stringBuilder.WriteString(" " + param)
 	}
-	stringBuilder.WriteString(" >> ./result_${cIndex}.txt\nkill $chipid")
+	stringBuilder.WriteString(" >> " + workPath +"/result_${cIndex}.txt\nkill $chipid")
 	_, err = file.WriteString(stringBuilder.String())
 	if err != nil {
 		log.Printf("gen check write file failed: %v\n", err)
@@ -109,11 +125,11 @@ func genCheckScript(index int, runCommand string, exeFileName string, input stri
 		"info=$(cat  /proc/$fpid/status|grep -e VmRSS)\necho \"current memory $info\"\n" +
 		"currentMemory=`echo $info | tr -cd \"[0-9]\"`\necho \"memory: $currentMemory\"\n" +
 		"echo \"max: $maxMemory\"\nif [ $currentMemory -gt $maxMemory ];then\necho \"memory out\"\nkill $fpid\n" +
-		"echo \"-1\" >> ./result_${cIndex}.txt\nbreak\nfi\n" +
-		"echo $currentMemory >> ./memory_log_${cIndex}.txt\ncurrentTime=$[$(date +%s%N)/1000000]\n" +
+		"echo \"-1\" >> " + workPath + "/result_${cIndex}.txt\nbreak\nfi\n" +
+		"echo $currentMemory >> " + workPath + "/memory_log_${cIndex}.txt\ncurrentTime=$[$(date +%s%N)/1000000]\n" +
 		"declare -i tmp=$currentTime-$startTime\necho \"time gap $tmp\"\n" +
-		"echo $tmp >> ./time_log_${cIndex}.txt\nif [ $tmp -gt $maxTime ];then\necho \"time out\"\nkill $fpid\n" +
-		"echo \"-2\" >> ./result_${cIndex}.txt")
+		"echo $tmp >> " + workPath + "/time_log_${cIndex}.txt\nif [ $tmp -gt $maxTime ];then\necho \"time out\"\nkill $fpid\n" +
+		"echo \"-2\" >> " + workPath + "/result_${cIndex}.txt\nfi\nsleep $timeGap\ndone")
 	_, err = watchFile.WriteString(sb.String())
 	if err != nil {
 		log.Printf("gen watch write file failed: %v\n", err)

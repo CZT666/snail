@@ -18,9 +18,10 @@ func problemGroup(engine *gin.Engine) {
 		groupSelect.POST("/delete", middleware.SelectQuestionMiddleware(queID), controller.DeleteSelectProblem)
 		groupSelect.POST("/deleteFromSet", middleware.CourseOperationMiddleware(courseID, false), controller.DeleteSelectProblemFromSet)
 		groupSelect.GET("/list", controller.QuerySelectProblemList)
-		groupSelect.GET("/detail", controller.QuerySelectProblemDetail)
+		groupSelect.POST("/detail", controller.QuerySelectProblemDetail)
 		groupSelect.GET("/category", controller.QuerySelectProblemCategory)
 		groupSelect.GET("/find", controller.FindSelectProblem)
+		groupSelect.POST("/template", controller.DownloadTemplate)
 	}
 	groupCode := engine.Group("/codeProblem")
 	groupCode.Use(middleware.JWTAuthMiddleware())
@@ -39,6 +40,6 @@ func problemGroup(engine *gin.Engine) {
 	groupSet := engine.Group("/queSet")
 	groupSet.Use(middleware.JWTAuthMiddleware())
 	{
-		groupSet.GET("/query", controller.QueryQueSet)
+		groupSet.POST("/query", controller.QueryQueSet)
 	}
 }

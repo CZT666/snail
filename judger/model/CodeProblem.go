@@ -17,6 +17,7 @@ type CodeProblem struct {
 }
 
 func GetProblemById(id int) (problem *CodeProblem, err error) {
+	problem = new(CodeProblem)
 	if err = dao.DB.Where("id = ?", id).First(&problem).Error; err != nil {
 		return nil, err
 	}
