@@ -28,7 +28,7 @@ func AddCourse(course *models.Course, user helper.User) (baseResponse *vo.BaseRe
 	return
 }
 
-func QueryCourseList(user helper.User, pageRequest *helper.PageRequest) (baseResponse *vo.BaseResponse) {
+func QueryCourseList(user helper.User) (baseResponse *vo.BaseResponse) {
 	baseResponse = new(vo.BaseResponse)
 	baseResponse.Code = vo.Success
 	userType := user.GetType()
@@ -37,7 +37,7 @@ func QueryCourseList(user helper.User, pageRequest *helper.PageRequest) (baseRes
 	if userType == 1 {
 		course := new(models.Course)
 		course.CreateBy = user.GetIdentity()
-		courseList, total, err := models.GetCourse(course, pageRequest)
+		courseList, total, err := models.GetCourse(course)
 		if err != nil {
 			log.Printf("Query course list failed: %v\n", err)
 			baseResponse.Code = vo.ServerError
@@ -59,7 +59,7 @@ func QueryCourseList(user helper.User, pageRequest *helper.PageRequest) (baseRes
 			v := reflect.ValueOf(a)
 			idList[index] = int(v.FieldByName("CourseID").Int())
 		}
-		courseList, total, err := models.GetCourseByID(idList, pageRequest)
+		courseList, total, err := models.GetCourseByID(idList)
 		if err != nil {
 			log.Printf("Course service get assistance by id failed: %v\n", err)
 			baseResponse.Code = vo.ServerError

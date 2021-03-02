@@ -2,7 +2,6 @@ package models
 
 import (
 	"snail/teacher_backend/dao"
-	"snail/teacher_backend/models/helper"
 	"time"
 )
 
@@ -28,13 +27,15 @@ func UpdateCourse(course *Course) (err error) {
 	return
 }
 
-func GetCourse(course *Course, pageRequest *helper.PageRequest) (courseList []Course, total int, err error) {
-	page := pageRequest.Page
-	pageSize := pageRequest.PageSize
-	if err = dao.DB.Where(&course).Limit(pageSize).Offset((page - 1) * pageSize).Find(&courseList).Count(&total).Error; err != nil {
+func GetCourse(course *Course) (courseList []Course, total int, err error) {
+	if err = dao.DB.Where(&course).Find(&courseList).Count(&total).Error; err != nil {
 		return nil, 0, err
 	}
 	return
+	// if err = dao.DB.Where(&course).Limit(pageSize).Offset((page - 1) * pageSize).Find(&courseList).Count(&total).Error; err != nil {
+	// 	return nil, 0, err
+	// }
+	// return
 }
 
 func GetSingleCourse(course *Course) (err error) {
@@ -42,10 +43,8 @@ func GetSingleCourse(course *Course) (err error) {
 	return
 }
 
-func GetCourseByID(idList []int, pageRequest *helper.PageRequest) (courseList []Course, total int, err error) {
-	page := pageRequest.Page
-	pageSize := pageRequest.PageSize
-	if err := dao.DB.Where("id in (?)", idList).Limit(pageSize).Offset((page - 1) * pageSize).Find(&courseList).Count(&total).Error; err != nil {
+func GetCourseByID(idList []int) (courseList []Course, total int, err error) {
+	if err := dao.DB.Where("id in (?)", idList).Find(&courseList).Count(&total).Error; err != nil {
 		return nil, 0, err
 	}
 	return
