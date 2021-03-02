@@ -32,10 +32,12 @@ func problemGroup(engine *gin.Engine) {
 		groupCode.POST("/updateCheckPoint", controller.UpdateCheckPoint)
 		groupCode.POST("deleteCheckPoint", controller.DeleteCheckPoint)
 		groupCode.POST("/update", controller.UpdateCodeProblem)
+		groupCode.POST("/detail", controller.FindCodeProblem)
 		groupCode.POST("/delete", controller.DeleteCodeProblem)
 		groupCode.POST("/append", controller.AppendCodeProblem)
 		groupCode.POST("/deleteFromSet", controller.DeleteCodeProblemFromSet)
 		groupCode.GET("/categories", controller.QueryCodeCategories)
+		groupCode.POST("/template", controller.CheckPointTemplate)
 	}
 	groupSet := engine.Group("/queSet")
 	groupSet.Use(middleware.JWTAuthMiddleware())
