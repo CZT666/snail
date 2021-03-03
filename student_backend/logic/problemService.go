@@ -131,4 +131,57 @@ func GetProblem(blog string)(baseResponse *vo.BaseResponse){
 	return
 }
 
-
+func GetProblemScore(blogID string,studentID string)(baseResponse *vo.BaseResponse) {
+	ctx := context.Background()
+	baseResponse = new(vo.BaseResponse)
+	baseResponse.Code = vo.Success
+	selectKey := fmt.Sprintf(SelectScores,blogID,studentID)
+	fmt.Printf("select key value:%v",selectKey)
+	codeKey := fmt.Sprintf(CodeScores,blogID,studentID)
+	fmt.Printf("code key value:%v",codeKey)
+	selectScore,selectError := dao.RedisDB.Get(ctx,selectKey).Result()
+	if selectError != nil && selectError != redis.Nil{
+		baseResponse.Code = vo.Error
+		baseResponse.Msg = "get redis of select score error"
+		log.Printf("get redis of select scoree error : %v\n",selectError)
+		return
+	}
+	codeScore,codeError := dao.RedisDB.Get(ctx,codeKey).Result()
+	if codeError != nil && codeError != redis.Nil{
+		baseResponse.Code = vo.Error
+		baseResponse.Msg = "get redis of code score error"
+		log.Printf("get redis of code scoree error : %v\n",selectError)
+		return
+	}
+	baseResponse.Data = cast.ToInt(codeScore) + cast.ToInt(selectScore)
+	var blog models.Blog
+	blog.ID = cast.ToInt(blogID)
+	if err := models.GetSingleBlog(&blog);err!=nil{
+		baseResponse.Code = vo.Error
+		baseResponse.Msg = "get single blog error"
+		return
+	}
+	fmt.Printf("select score:%v, code score:%v",selectScore,codeScore)
+	baseResponse.Data = cast.ToInt(selectScore) + cast.ToInt(codeScore)
+	scoreRecord := models.ScoreRecord{
+		StuID: studentID,
+		CourseID: blog.CourseID,
+		BlogID: blog.ID,
+	}
+	tmpErr := models.GetSingleScoreRecord(&scoreRecord)
+	if tmpErr !=nil{
+		scoreRecord.Score = cast.ToInt(selectScore) + cast.ToInt(codeScore)
+		if err:= models.AddScoreRecord(&scoreRecord);err!=nil{
+			baseResponse.Code = vo.Error
+			baseResponse.Msg = "add score record error"
+			return
+		}
+	}else{
+		if err := models.UpdateScoreRecord(&scoreRecord);err!=nil{
+			baseResponse.Code = vo.Error
+			baseResponse.Msg = "update score record error"
+			return
+		}
+	}
+	return
+}

@@ -5,11 +5,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/go-redis/redis/v8"
+	"github.com/spf13/cast"
 	"log"
 	"strings"
 	"student_bakcend/dao"
 	"student_bakcend/models"
 	"student_bakcend/vo"
+	"time"
 )
 
 func GetSelect(blog string) (baseResponse *vo.BaseResponse) {
@@ -55,7 +57,7 @@ func GetSelect(blog string) (baseResponse *vo.BaseResponse) {
 	return
 }
 
-func GetSelectScore(answers string,blog string,userID string) (baseResponse *vo.BaseResponse) {
+func SelectScore(answers string,blog string,userID string) (baseResponse *vo.BaseResponse) {
 	baseResponse = new(vo.BaseResponse)
 	baseResponse.Code = vo.Success
 	num := 0
@@ -77,9 +79,35 @@ func GetSelectScore(answers string,blog string,userID string) (baseResponse *vo.
 				return
 			}
 			for i := range answersValues{
+				var practice models.PracticeRecord
+				practice.QueID = answersValues[i].ID
+				practice.StuID = userID
+				practice.BlogID = cast.ToInt(blog)
+				tmpErr := models.GetSinglePracticeRecord(&practice)
 				if scoresValue[i] == answersValues[i].Answer{
 					num += answersValues[i].Score
+					practice.Status = 1
+					practice.PracticeTime +=1
+					practice.FinishTime = time.Now()
+				}else{
+					practice.Status = 0
+					practice.PracticeTime +=1
+					practice.FinishTime = time.Now()
 				}
+				if tmpErr != nil{
+					if err := models.AddPracticeRecord(&practice);err!=nil{
+						baseResponse.Code = vo.Error
+						baseResponse.Msg = "add practice record fail"
+						return
+					}
+				}else{
+					if err := models.UpdatePracticeRecord(&practice);err!=nil{
+						baseResponse.Code = vo.Error
+						baseResponse.Msg = "update practice record fail"
+						return
+					}
+				}
+				fmt.Printf("select value*****:%v",practice)
 			}
 		}
 	}else{

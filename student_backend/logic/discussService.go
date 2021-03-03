@@ -24,8 +24,8 @@ type RedPoint struct {
 func AddQuestion(question *models.Question, user helper.User) (baseResponse *vo.BaseResponse) {
 	baseResponse = new(vo.BaseResponse)
 	baseResponse.Code = vo.Success
-	//question.CreateBy = user.GetIdentity()
-	question.CreateBy = "canruichen"
+	question.CreateBy = user.GetName()
+	//question.CreateBy = "canruichen"
 	question.CreateTime = time.Now()
 	if err := models.AddQuestion(question); err != nil {
 		log.Printf("discuss service add question failed: %v\n", err)
@@ -164,8 +164,8 @@ func SearchQuestion(pageRequest *helper.PageRequest, searchName string, courseID
 func AddAnswer(answer *models.Answer, user helper.User) (baseResponse *vo.BaseResponse) {
 	baseResponse = new(vo.BaseResponse)
 	baseResponse.Code = vo.Success
-	//question.CreateBy = user.GetIdentity()
-	answer.CreateBy = "canruichen"
+	answer.CreateBy = user.GetName()
+	//answer.CreateBy = "canruichen"
 	answer.AnswerTime = time.Now()
 	if err := models.AddAnswer(answer); err != nil {
 		log.Printf("disscuss service add answer failed: %v\n", err)

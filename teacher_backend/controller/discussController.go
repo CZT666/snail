@@ -12,28 +12,28 @@ import (
 )
 
 func GetRedPoint(c *gin.Context)  {
-	//org, _ := c.Get("user")
-	//user, err := models.GetToken(org)
-	var user helper.User
-	//if err != nil {
-	//	log.Printf("question controller get token failed: %v\n", err)
-	//	c.JSON(http.StatusOK, vo.BadResponse(vo.ServerError))
-	//	return
-	//}
+	org, _ := c.Get("user")
+	user, err := models.GetToken(org)
+	//var user helper.User
+	if err != nil {
+		log.Printf("red point get token failed: %v\n", err)
+		c.JSON(http.StatusOK, vo.BadResponse(vo.ServerError))
+		return
+	}
 	baseResponse := logic.GetRedPoint(user)
 	c.JSON(http.StatusOK, baseResponse)
 	return
 }
 
 func GetAllQuestion(c *gin.Context)  {
-	//org, _ := c.Get("user")
-	//user, err := models.GetToken(org)
-	var user helper.User
-	//if err != nil {
-	//	log.Printf("question controller get token failed: %v\n", err)
-	//	c.JSON(http.StatusOK, vo.BadResponse(vo.ServerError))
-	//	return
-	//}
+	org, _ := c.Get("user")
+	user, err := models.GetToken(org)
+	//var user helper.User
+	if err != nil {
+		log.Printf("all question get token failed: %v\n", err)
+		c.JSON(http.StatusOK, vo.BadResponse(vo.ServerError))
+		return
+	}
 	pageRequest := helper.NewPageRequest()
 	if err := c.BindJSON(&pageRequest); err != nil {
 		log.Printf("get all question page request bind json failed: %v\n", err)
@@ -47,14 +47,14 @@ func GetAllQuestion(c *gin.Context)  {
 
 func GetSingleQuestion(c *gin.Context)  {
 	questionID := c.Param("question_id")
-	//org, _ := c.Get("user")
-	//user, err := models.GetToken(org)
-	var user helper.User
-	//if err != nil {
-	//	log.Printf("question controller get token failed: %v\n", err)
-	//	c.JSON(http.StatusOK, vo.BadResponse(vo.ServerError))
-	//	return
-	//}
+	org, _ := c.Get("user")
+	user, err := models.GetToken(org)
+	//var user helper.User
+	if err != nil {
+		log.Printf("single question get token failed: %v\n", err)
+		c.JSON(http.StatusOK, vo.BadResponse(vo.ServerError))
+		return
+	}
 	baseResponse := logic.GetSingleQuestion(questionID,user)
 	c.JSON(http.StatusOK, baseResponse)
 	return
@@ -67,14 +67,14 @@ func AddAnswer(c *gin.Context){
 		c.JSON(http.StatusOK, vo.BadResponse(vo.ParamError))
 		return
 	}
-	//org, _ := c.Get("user")
-	//user, err := models.GetToken(org)
-	var user helper.User
-	//if err != nil {
-	//	log.Printf("question controller get token failed: %v\n", err)
-	//	c.JSON(http.StatusOK, vo.BadResponse(vo.ServerError))
-	//	return
-	//}
+	org, _ := c.Get("user")
+	user, err := models.GetToken(org)
+	//var user helper.User
+	if err != nil {
+		log.Printf("add answer get token failed: %v\n", err)
+		c.JSON(http.StatusOK, vo.BadResponse(vo.ServerError))
+		return
+	}
 	baseResponse := logic.AddAnswer(answer, user)
 	c.JSON(http.StatusOK, baseResponse)
 	return

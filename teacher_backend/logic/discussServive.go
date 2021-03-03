@@ -29,8 +29,8 @@ type Wrapper struct {
 func GetRedPoint(user helper.User) (baseResponse *vo.BaseResponse) {
 	baseResponse = new(vo.BaseResponse)
 	baseResponse.Code = vo.Success
-	//key := fmt.Sprintf(RedisRedPoint,user.GetIdentity())
-	key := fmt.Sprintf(RedisRedPoint,"1074596965@qq.com")
+	key := fmt.Sprintf(RedisRedPoint,user.GetIdentity())
+	//key := fmt.Sprintf(RedisRedPoint,"1074596965@qq.com")
 	result, err := dao.RedisDB.Get(context.Background(), key).Result()
 	if err != nil && err != redis.Nil {
 		baseResponse.Code = vo.Error
@@ -60,8 +60,8 @@ func GetRedPoint(user helper.User) (baseResponse *vo.BaseResponse) {
 func GetAllQuestion(user helper.User, pageRequest *helper.PageRequest) (baseResponse *vo.BaseResponse) {
 	baseResponse = new(vo.BaseResponse)
 	baseResponse.Code = vo.Success
-	//key := fmt.Sprintf(RedisRedPoint,user.GetIdentity())
-	key := fmt.Sprintf(RedisRedPoint,"1074596965@qq.com")
+	key := fmt.Sprintf(RedisRedPoint,user.GetIdentity())
+	//key := fmt.Sprintf(RedisRedPoint,"1074596965@qq.com")
 	result, err := dao.RedisDB.Get(context.Background(), key).Result()
 	if err != nil && err != redis.Nil {
 		baseResponse.Code = vo.Error
@@ -108,8 +108,8 @@ func GetSingleQuestion(questionID string,user helper.User) (baseResponse *vo.Bas
 		baseResponse.Code = vo.Error
 		baseResponse.Msg = "查询失败"
 	}
-	//key := fmt.Sprintf(RedisRedPoint,user.GetIdentity())
-	key := fmt.Sprintf(RedisRedPoint,"1074596965@qq.com")
+	key := fmt.Sprintf(RedisRedPoint,user.GetIdentity())
+	//key := fmt.Sprintf(RedisRedPoint,"1074596965@qq.com")
 	result, err := dao.RedisDB.Get(context.Background(), key).Result()
 	if err != nil && err != redis.Nil {
 		baseResponse.Code = vo.Error
@@ -152,8 +152,8 @@ func GetSingleQuestion(questionID string,user helper.User) (baseResponse *vo.Bas
 func AddAnswer(answer *models.Answer, user helper.User) (baseResponse *vo.BaseResponse) {
 	baseResponse = new(vo.BaseResponse)
 	baseResponse.Code = vo.Success
-	//question.CreateBy = user.GetIdentity()
-	answer.CreateBy = "canruichen"
+	answer.CreateBy = user.GetName()
+	//answer.CreateBy = "canruichen"
 	answer.AnswerTime = time.Now()
 	if err := models.AddAnswer(answer); err != nil {
 		log.Printf("disscuss service add answer failed: %v\n", err)

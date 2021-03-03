@@ -3,8 +3,8 @@ package logic
 import (
 	"fmt"
 	"log"
-	"student_bakcend/models/helper"
 	"student_bakcend/models"
+	"student_bakcend/models/helper"
 	"student_bakcend/vo"
 )
 
@@ -90,4 +90,31 @@ func isCourseExists(courseID int)bool{
 		return false
 	}
 	return true
+}
+
+func GetStudentCourse(studentID string,pageRequest *helper.PageRequest)  (baseResponse *vo.BaseResponse) {
+	baseResponse = new(vo.BaseResponse)
+	baseResponse.Code = vo.Success
+	studentCourse := models.CourseToStudent{
+		StudentID: studentID,
+	}
+	res,total,tmpErr := models.GetCourseStudent(&studentCourse,pageRequest)
+	if tmpErr != nil{
+		log.Printf("get course student failed: %v\n", tmpErr)
+		baseResponse.Code = vo.ServerError
+		return
+	}
+	var course []models.Course
+	for i := range res{
+		tmp := models.Course{ID: res[i].CourseID}
+		if err:= models.GetSingleCourse(&tmp);err!=nil{
+			log.Printf("get single course failed: %v\n", err)
+			baseResponse.Code = vo.ServerError
+			return
+		}
+		course = append(course,tmp)
+	}
+	pageResponse := helper.NewPageResponse(total, course)
+	baseResponse.Data = pageResponse
+	return
 }

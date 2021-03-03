@@ -1,15 +1,14 @@
 package controller
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"log"
 	"net/http"
 	"student_bakcend/logic"
 	"student_bakcend/models"
-	"student_bakcend/vo"
 	"student_bakcend/models/helper"
+	"student_bakcend/vo"
 )
 
 func AddQuestion(c *gin.Context){
@@ -55,8 +54,6 @@ func GetSingleQuestion(c *gin.Context){
 func SearchQuestion(c *gin.Context)  {
 	searchName := c.Param("name")
 	courseID := c.Param("course_id")
-	fmt.Println("************************************")
-	fmt.Println(searchName,courseID)
 	pageRequest := helper.NewPageRequest()
 	if err := c.BindJSON(&pageRequest); err != nil {
 		log.Printf("search question bind json failed: %v\n", err)

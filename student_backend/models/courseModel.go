@@ -19,10 +19,10 @@ type Course struct {
 	CreateTime  time.Time `json:"create_time"`
 }
 type CourseToStudent struct {
-	ID        int `json:"id"`
-	CourseID  int `json:"course_id"`
-	StudentID int `json:"student_id"`
-	IsValid   int `json:"is_valid"`
+	ID        int    `json:"id"`
+	CourseID  int    `json:"course_id"`
+	StudentID string `json:"student_id"`
+	IsValid   int 	 `json:"is_valid"`
 }
 
 func CreateCourseToStudent(courseToStudent *CourseToStudent) (err error) {
@@ -55,5 +55,15 @@ func GetSingleCourse(course *Course) (err error) {
 }
 func MatchCourseStudent(course *CourseToStudent) (err error) {
 	err = dao.DB.Where(&course).First(&course).Error
+	return
+}
+
+func GetCourseStudent(course *CourseToStudent, pageRequest *helper.PageRequest)(courseList []CourseToStudent, total int, err error){
+	page := pageRequest.Page
+	pageSize := pageRequest.PageSize
+	if err = dao.DB.Where(&course).Limit(pageSize).Offset((page - 1) * pageSize).Find(&courseList).Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+	fmt.Printf("course list msg:%v\n", courseList)
 	return
 }

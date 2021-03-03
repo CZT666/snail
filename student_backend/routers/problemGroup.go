@@ -3,24 +3,26 @@ package routers
 import (
 	"github.com/gin-gonic/gin"
 	"student_bakcend/controller"
+	"student_bakcend/middleware"
 )
 
 func problemGroup(engine *gin.Engine) {
 	groupProblem := engine.Group("/problem")
-	//groupProblem.Use(middleware.JWTAuthMiddleware())
+	groupProblem.Use(middleware.JWTAuthMiddleware())
 	{
-		groupProblem.GET("/getProblem/:blogID", controller.GetProblem)
+		groupProblem.GET("/getProblem/:blog_id", controller.GetProblem)
+		groupProblem.GET("/getProblemScore/:blog_id",controller.GetProblemScore)
 	}
 
 	groupSelect := engine.Group("/selectProblem")
-	//groupSelect.Use(middleware.JWTAuthMiddleware())
+	groupSelect.Use(middleware.JWTAuthMiddleware())
 	{
-		groupSelect.GET("/getSelect/:blogID", controller.GetSelect)
-		groupSelect.POST("/getSelectScore",controller.GetSelectScore)
+		groupSelect.GET("/getSelect/:blog_id", controller.GetSelect)
+		groupSelect.POST("/SelectScore",controller.SelectScore)
 	}
 	groupCode := engine.Group("/codeProblem")
-	//groupCode.Use(middleware.JWTAuthMiddleware())
+	groupCode.Use(middleware.JWTAuthMiddleware())
 	{
-		groupCode.GET("/getCode/:blogID", controller.GetCode)
+		groupCode.GET("/getCode/:blog_id", controller.GetCode)
 	}
 }
