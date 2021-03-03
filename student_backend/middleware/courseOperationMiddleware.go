@@ -37,7 +37,7 @@ func CourseOperationMiddleware(idKey string, readOnly bool) func(c *gin.Context)
 			}
 			tmp := new(models.CourseToStudent)
 			tmp.CourseID = courseID
-			tmp.StudentID = student.ID
+			tmp.StudentID = student.StudentID
 			if err = models.MatchCourseStudent(tmp); err != nil {
 				log.Printf("student not allow access course: %v\n", err)
 				c.JSON(http.StatusOK, vo.BadResponse(vo.Error))
