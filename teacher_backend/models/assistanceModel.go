@@ -2,13 +2,11 @@ package models
 
 import (
 	"snail/teacher_backend/dao"
-	"time"
 )
 
 type Assistance struct {
-	StuID       string    `json:"stu_id"`
-	CourseID    int       `json:"course_id"`
-	ExpiredTime time.Time `json:"expired_time"`
+	StuID    string `json:"stu_id"`
+	CourseID int    `json:"course_id"`
 }
 
 func CreateAssistance(assistance *Assistance) (err error) {

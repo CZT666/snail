@@ -198,3 +198,18 @@ func QueryCodeCategories(user helper.User) (baseResponse *vo.BaseResponse) {
 	baseResponse.Data = categoryList
 	return
 }
+
+func QueryCodeProblemDetail(req *vo.ProblemDetailReq) (baseResponse *vo.BaseResponse) {
+	baseResponse = new(vo.BaseResponse)
+	baseResponse.Code = vo.Success
+	que := new(models.CodeProblem)
+	que.ID = req.QueID
+	if err := models.GetSingleCodeProblem(que); err != nil {
+		log.Printf("Select problem service get single problem failed: %v\n", err)
+		baseResponse.Code = vo.Error
+		baseResponse.Msg = "查询失败"
+		return
+	}
+	baseResponse.Data = que
+	return
+}

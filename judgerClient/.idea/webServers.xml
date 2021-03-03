@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="f2c6cc1c-22d3-494d-a0d2-38485cf04a4f" name="judgerClient">
+        <fileTransfer accessType="SFTP" host="1.15.123.133" port="22" sshConfigId="9ebfa3e5-abc4-4342-b202-fd999f499e04" sshConfig="root@1.15.123.133:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

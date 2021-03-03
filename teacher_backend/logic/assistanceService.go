@@ -65,3 +65,38 @@ func DeleteAssistance(assistance *models.Assistance) (baseResponse *vo.BaseRespo
 	}
 	return baseResponse
 }
+
+func FindStudent(student *models.Student) (baseResponse *vo.BaseResponse) {
+	baseResponse = new(vo.BaseResponse)
+	baseResponse.Code = vo.Success
+	if err := models.GetSingleStudent(student); err != nil {
+		log.Printf("Assistance service find student failed: %v\n", err)
+		baseResponse.Code = vo.Error
+		baseResponse.Msg = "查找失败"
+	}
+	baseResponse.Data = student
+	return
+}
+
+func GetAllAssistance(assistance *models.Assistance) (baseResponse *vo.BaseResponse) {
+	baseResponse = new(vo.BaseResponse)
+	baseResponse.Code = vo.Success
+	assistanceList, err := models.GetAssistance(assistance)
+	if err != nil {
+		log.Printf("get assistance failed: %v\n", err)
+		baseResponse.Code = vo.Error
+		return baseResponse
+	}
+	var stuList []*models.Student
+	for _, stu := range assistanceList {
+		tmp := new(models.Student)
+		tmp.StudentID = stu.StuID
+		if err := models.GetSingleStudent(tmp); err != nil {
+			log.Printf("find student failed: %v\n", err)
+			continue
+		}
+		stuList = append(stuList, tmp)
+	}
+	baseResponse.Data = stuList
+	return baseResponse
+}

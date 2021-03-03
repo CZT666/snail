@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"snail/teacher_backend/logic"
 	"snail/teacher_backend/models"
-	"snail/teacher_backend/models/helper"
 	"snail/teacher_backend/vo"
 )
 
@@ -39,15 +38,9 @@ func QueryCourseList(c *gin.Context) {
 		c.JSON(http.StatusOK, vo.BadResponse(vo.ServerError))
 		return
 	}
-	pageRequest := helper.NewPageRequest()
-	if err = c.BindJSON(&pageRequest); err != nil {
-		log.Printf("Query course list bind json failed: %v\n", err)
-		c.JSON(http.StatusOK, vo.BadResponse(vo.ParamError))
-		return
-	}
 
 	baseResponse := new(vo.BaseResponse)
-	baseResponse = logic.QueryCourseList(user, pageRequest)
+	baseResponse = logic.QueryCourseList(user)
 	c.JSON(http.StatusOK, baseResponse)
 	return
 }
