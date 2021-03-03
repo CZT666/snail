@@ -7,7 +7,7 @@ import (
 
 func accessGroup(engine *gin.Engine) {
 	engine.POST("/register", controller.TeacherRegister)
-	engine.GET("/login", controller.TeacherLogin)
+	engine.POST("/login", controller.TeacherLogin)
 	engine.GET("/resetPwd/:mail", controller.ResetPwdReq)
 	engine.POST("/resetPwd", controller.UpdatePwd)
 }

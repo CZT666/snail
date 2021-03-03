@@ -11,7 +11,9 @@ func AssistanceGroup(engine *gin.Engine) {
 	group := engine.Group("/assistance")
 	group.Use(middleware.JWTAuthMiddleware())
 	{
+		group.POST("find", controller.FindStudent)
 		group.POST("/add", middleware.CourseOperationMiddleware(courseID, false), controller.AddAssistance)
 		group.POST("/delete", middleware.CourseOperationMiddleware(courseID, false), controller.DeleteAssistance)
+		group.POST("/get", controller.GetAllAssistance)
 	}
 }

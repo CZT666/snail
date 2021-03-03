@@ -18,9 +18,10 @@ func problemGroup(engine *gin.Engine) {
 		groupSelect.POST("/delete", middleware.SelectQuestionMiddleware(queID), controller.DeleteSelectProblem)
 		groupSelect.POST("/deleteFromSet", middleware.CourseOperationMiddleware(courseID, false), controller.DeleteSelectProblemFromSet)
 		groupSelect.GET("/list", controller.QuerySelectProblemList)
-		groupSelect.GET("/detail", controller.QuerySelectProblemDetail)
+		groupSelect.POST("/detail", controller.QuerySelectProblemDetail)
 		groupSelect.GET("/category", controller.QuerySelectProblemCategory)
 		groupSelect.GET("/find", controller.FindSelectProblem)
+		groupSelect.POST("/template", controller.DownloadTemplate)
 	}
 	groupCode := engine.Group("/codeProblem")
 	groupCode.Use(middleware.JWTAuthMiddleware())
@@ -31,14 +32,16 @@ func problemGroup(engine *gin.Engine) {
 		groupCode.POST("/updateCheckPoint", controller.UpdateCheckPoint)
 		groupCode.POST("deleteCheckPoint", controller.DeleteCheckPoint)
 		groupCode.POST("/update", controller.UpdateCodeProblem)
+		groupCode.POST("/detail", controller.FindCodeProblem)
 		groupCode.POST("/delete", controller.DeleteCodeProblem)
 		groupCode.POST("/append", controller.AppendCodeProblem)
 		groupCode.POST("/deleteFromSet", controller.DeleteCodeProblemFromSet)
 		groupCode.GET("/categories", controller.QueryCodeCategories)
+		groupCode.POST("/template", controller.CheckPointTemplate)
 	}
 	groupSet := engine.Group("/queSet")
 	groupSet.Use(middleware.JWTAuthMiddleware())
 	{
-		groupSet.GET("/query", controller.QueryQueSet)
+		groupSet.POST("/query", controller.QueryQueSet)
 	}
 }

@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package proto;
+
+service JudgeClient {
+  rpc SendMessage(SendMessageReq) returns (SendMessageRsp){}
+}
+
+message SendMessageReq {
+  int32 resultCode = 1;
+  string msg = 2;
+}
+
+message SendMessageRsp {
+  int32 result = 1;
+}

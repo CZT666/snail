@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin/binding"
 	"log"
 	"net/http"
+	"os"
 	"snail/teacher_backend/logic"
 	"snail/teacher_backend/models"
 	"snail/teacher_backend/models/helper"
@@ -170,5 +171,35 @@ func FindSelectProblem(ctx *gin.Context) {
 	}
 	baseResponse := logic.FindSelectProblem(req, user)
 	ctx.JSON(http.StatusOK, baseResponse)
+	return
+}
+
+func DownloadTemplate(c *gin.Context) {
+	workDir, _ := os.Getwd()
+	filePath := workDir + "/template/选择题题库模板.xlsx"
+	log.Print(filePath)
+	//打开文件
+	fileTmp, err := os.Open(filePath)
+	if err != nil {
+		log.Printf("error: %v\n", err)
+	}
+	defer fileTmp.Close()
+
+	//获取文件的名称
+	fileName:="选择题题库模板.xlsx"
+	c.Header("Content-Type", "application/octet-stream")
+	c.Header("Content-Disposition", "attachment; filename="+fileName)
+	c.Header("Content-Transfer-Encoding", "binary")
+	c.Header("Cache-Control", "no-cache")
+	//if common.IsEmpty(filePath) || common.IsEmpty(fileName) || errByOpenFile != nil {
+	//	logs.Error("获取文件失败")
+	//	c.Redirect(http.StatusFound, "/404")
+	//	return
+	//}
+	c.Header("Content-Type", "application/octet-stream")
+	c.Header("Content-Disposition", "attachment; filename="+fileName)
+	c.Header("Content-Transfer-Encoding", "binary")
+
+	c.File(filePath)
 	return
 }

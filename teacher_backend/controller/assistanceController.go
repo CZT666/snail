@@ -33,3 +33,27 @@ func DeleteAssistance(c *gin.Context) {
 	c.JSON(http.StatusOK, baseResponse)
 	return
 }
+
+func FindStudent(ctx *gin.Context) {
+	req := new(models.Student)
+	if err := ctx.ShouldBindBodyWith(&req, binding.JSON); err != nil {
+		log.Printf("Add assistance bind json failed: %v\n", err)
+		ctx.JSON(http.StatusOK, vo.BadResponse(vo.ParamError))
+		return
+	}
+	baseResponse := logic.FindStudent(req)
+	ctx.JSON(http.StatusOK, baseResponse)
+	return
+}
+
+func GetAllAssistance(c *gin.Context) {
+	req := new(models.Assistance)
+	if err := c.ShouldBindBodyWith(&req, binding.JSON); err != nil {
+		log.Printf("Add assistance bind json failed: %v\n", err)
+		c.JSON(http.StatusOK, vo.BadResponse(vo.ParamError))
+		return
+	}
+	baseResponse := logic.GetAllAssistance(req)
+	c.JSON(http.StatusOK, baseResponse)
+	return
+}
