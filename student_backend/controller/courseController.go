@@ -20,13 +20,14 @@ func JoinCourse(c *gin.Context) {
 		c.JSON(http.StatusOK, vo.BadResponse(vo.ServerError))
 		return
 	}
+	//student := new(models.Student)
 	courseToStudent := new(models.CourseToStudent)
 	if err := c.BindJSON(&courseToStudent); err != nil {
 		log.Printf("course to student bind json failed: %v\n", err)
 		c.JSON(http.StatusOK, vo.BadResponse(vo.ParamError))
 		return
 	}
-	courseToStudent.StudentID = student.ID
+	courseToStudent.StudentID = student.StudentID
 	baseResponse := new(vo.BaseResponse)
 	baseResponse = logic.JoinCourse(courseToStudent)
 	c.JSON(http.StatusOK, baseResponse)
@@ -34,22 +35,13 @@ func JoinCourse(c *gin.Context) {
 }
 
 func QueryCourseList(c *gin.Context) {
-	//org, _ := c.Get("student")
-	//student, err := utils.GetToken(org)
-	//if err != nil {
-	//	log.Printf("Get token failed: %v\n", err)
-	//	c.JSON(http.StatusOK, vo.BadResponse(vo.ServerError))
-	//	return
-	//}
 	pageRequest := helper.NewPageRequest()
 	if err := c.BindJSON(&pageRequest); err != nil {
 		log.Printf("Query course list bind json failed: %v\n", err)
 		c.JSON(http.StatusOK, vo.BadResponse(vo.ParamError))
 		return
 	}
-
-	baseResponse := new(vo.BaseResponse)
-	baseResponse = logic.QueryCourseList(pageRequest)
+	baseResponse := logic.QueryCourseList(pageRequest)
 	c.JSON(http.StatusOK, baseResponse)
 	return
 }
@@ -70,11 +62,30 @@ func SearchCourse(c *gin.Context)  {
 	searchName := c.Param("name")
 	pageRequest := helper.NewPageRequest()
 	if err := c.BindJSON(&pageRequest); err != nil {
-		log.Printf("Query course list bind json failed: %v\n", err)
+		log.Printf("search course bind json failed: %v\n", err)
 		c.JSON(http.StatusOK, vo.BadResponse(vo.ParamError))
 		return
 	}
 	baseResponse := logic.SearchCourse(pageRequest,searchName)
+	c.JSON(http.StatusOK, baseResponse)
+	return
+}
+
+func GetStudentCourse(c *gin.Context) {
+	org, _ := c.Get("user")
+	student, err := utils.GetToken(org)
+	if err != nil {
+		log.Printf("Get token failed: %v\n", err)
+		c.JSON(http.StatusOK, vo.BadResponse(vo.ServerError))
+		return
+	}
+	pageRequest := helper.NewPageRequest()
+	if err := c.BindJSON(&pageRequest); err != nil {
+		log.Printf("Query course list bind json failed: %v\n", err)
+		c.JSON(http.StatusOK, vo.BadResponse(vo.ParamError))
+		return
+	}
+	baseResponse := logic.GetStudentCourse(student.StudentID,pageRequest)
 	c.JSON(http.StatusOK, baseResponse)
 	return
 }

@@ -27,6 +27,7 @@ func addHandler(engine *gin.Engine) {
 	blogGroup(engine)
 	problemGroup(engine)
 	recordGroup(engine)
+	discussGroup(engine)
 }
 
 func Cors() gin.HandlerFunc {

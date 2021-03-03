@@ -12,5 +12,6 @@ func addHandler(engine *gin.Engine) {
 	accessGroup(engine)
 	courseGroup(engine)
 	blogGroup(engine)
-
+	problemGroup(engine)
+	discussGroup(engine)
 }

@@ -3,14 +3,19 @@ package logic
 import (
 	"fmt"
 	"log"
-	"student_bakcend/models/helper"
 	"student_bakcend/models"
+	"student_bakcend/models/helper"
 	"student_bakcend/vo"
 )
 
 func JoinCourse(courseToStudent *models.CourseToStudent)(baseResponse *vo.BaseResponse){
 	baseResponse = new(vo.BaseResponse)
 	baseResponse.Code = vo.Success
+	if !isCourseExists(courseToStudent.CourseID){
+		baseResponse.Code = vo.Error
+		baseResponse.Msg = "course not exist"
+		return
+	}
 	if isCoursePrivate(courseToStudent.CourseID){
 		courseToStudent.IsValid = 0
 	}else{
@@ -22,7 +27,6 @@ func JoinCourse(courseToStudent *models.CourseToStudent)(baseResponse *vo.BaseRe
 		log.Printf("CourseToStudent service create course failed: %v\n", err)
 		return
 	}
-
 	return
 }
 
@@ -77,4 +81,40 @@ func isCoursePrivate(courseID int) bool {
 	}
 	fmt.Printf("course msg is:%v\n",course)
 	return course.IsPrivate == 1
+}
+
+func isCourseExists(courseID int)bool{
+	course := new(models.Course)
+	course.ID = courseID
+	if err := models.GetSingleCourse(course); err!=nil{
+		return false
+	}
+	return true
+}
+
+func GetStudentCourse(studentID string,pageRequest *helper.PageRequest)  (baseResponse *vo.BaseResponse) {
+	baseResponse = new(vo.BaseResponse)
+	baseResponse.Code = vo.Success
+	studentCourse := models.CourseToStudent{
+		StudentID: studentID,
+	}
+	res,total,tmpErr := models.GetCourseStudent(&studentCourse,pageRequest)
+	if tmpErr != nil{
+		log.Printf("get course student failed: %v\n", tmpErr)
+		baseResponse.Code = vo.ServerError
+		return
+	}
+	var course []models.Course
+	for i := range res{
+		tmp := models.Course{ID: res[i].CourseID}
+		if err:= models.GetSingleCourse(&tmp);err!=nil{
+			log.Printf("get single course failed: %v\n", err)
+			baseResponse.Code = vo.ServerError
+			return
+		}
+		course = append(course,tmp)
+	}
+	pageResponse := helper.NewPageResponse(total, course)
+	baseResponse.Data = pageResponse
+	return
 }

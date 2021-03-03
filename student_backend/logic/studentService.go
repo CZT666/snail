@@ -16,7 +16,10 @@ import (
 const (
 	resetKeyPreFix = "mail.reset."
 )
-
+type StudentToken struct {
+	Student models.Student
+	Token string
+}
 func AddStudent(student *models.Student) (baseResponse *vo.BaseResponse) {
 	baseResponse = new(vo.BaseResponse)
 	baseResponse.Code = vo.Success
@@ -47,11 +50,19 @@ func StudentLogin(student *models.Student) (baseResponse *vo.BaseResponse) {
 			baseResponse.Code = vo.TokenError
 			return
 		}
-		baseResponse.Data = tokenString
+		var studentInfo models.Student
+		studentInfo.StudentID = student.StudentID
+		if _, err := models.GetStudent(&studentInfo);err != nil{
+			fmt.Printf("get student error: %v\n", err)
+			baseResponse.Code = vo.Error
+			return
+		}
+		result := StudentToken{Student: studentInfo,Token: tokenString}
+		baseResponse.Data = result
 		return
 	} else {
 		baseResponse.Code = vo.Error
-		baseResponse.Code = "账号或密码错误"
+		baseResponse.Msg = "账号或密码错误"
 		return
 	}
 
