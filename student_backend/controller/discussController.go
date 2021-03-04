@@ -1,20 +1,21 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"log"
 	"net/http"
 	"student_bakcend/logic"
 	"student_bakcend/models"
-	"student_bakcend/models/helper"
 	"student_bakcend/vo"
 )
 
 func AddQuestion(c *gin.Context){
 	question := new(models.Question)
+	fmt.Println("11111111111111111111111111111")
 	if err := c.ShouldBindBodyWith(&question, binding.JSON); err != nil {
-		log.Printf("Add question bind json failed: %v\n", err)
+		fmt.Printf("Add question bind json failed: %v\n", err)
 		c.JSON(http.StatusOK, vo.BadResponse(vo.ParamError))
 		return
 	}
@@ -33,13 +34,7 @@ func AddQuestion(c *gin.Context){
 
 func GetAllQuestion(c *gin.Context){
 	courseID := c.Param("course_id")
-	pageRequest := helper.NewPageRequest()
-	if err := c.BindJSON(&pageRequest); err != nil {
-		log.Printf("get all question page request bind json failed: %v\n", err)
-		c.JSON(http.StatusOK, vo.BadResponse(vo.ParamError))
-		return
-	}
-	baseResponse := logic.GetAllQuestion(courseID,pageRequest)
+	baseResponse := logic.GetAllQuestion(courseID)
 	c.JSON(http.StatusOK, baseResponse)
 	return
 }
@@ -54,13 +49,7 @@ func GetSingleQuestion(c *gin.Context){
 func SearchQuestion(c *gin.Context)  {
 	searchName := c.Param("name")
 	courseID := c.Param("course_id")
-	pageRequest := helper.NewPageRequest()
-	if err := c.BindJSON(&pageRequest); err != nil {
-		log.Printf("search question bind json failed: %v\n", err)
-		c.JSON(http.StatusOK, vo.BadResponse(vo.ParamError))
-		return
-	}
-	baseResponse := logic.SearchQuestion(pageRequest,searchName,courseID)
+	baseResponse := logic.SearchQuestion(searchName,courseID)
 	c.JSON(http.StatusOK, baseResponse)
 	return
 }
@@ -87,13 +76,7 @@ func AddAnswer(c *gin.Context){
 
 func GetAnswer(c *gin.Context){
 	questionID := c.Param("question_id")
-	pageRequest := helper.NewPageRequest()
-	if err := c.BindJSON(&pageRequest); err != nil {
-		log.Printf("get all answer page request bind json failed: %v\n", err)
-		c.JSON(http.StatusOK, vo.BadResponse(vo.ParamError))
-		return
-	}
-	baseResponse := logic.GetAnswer(questionID,pageRequest)
+	baseResponse := logic.GetAnswer(questionID)
 	c.JSON(http.StatusOK, baseResponse)
 	return
 }

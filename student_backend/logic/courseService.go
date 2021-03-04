@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"student_bakcend/models"
-	"student_bakcend/models/helper"
 	"student_bakcend/vo"
 )
 
@@ -30,18 +29,17 @@ func JoinCourse(courseToStudent *models.CourseToStudent)(baseResponse *vo.BaseRe
 	return
 }
 
-func QueryCourseList(pageRequest *helper.PageRequest) (baseResponse *vo.BaseResponse) {
+func QueryCourseList() (baseResponse *vo.BaseResponse) {
 	baseResponse = new(vo.BaseResponse)
 	baseResponse.Code = vo.Success
 	course := new(models.Course)
-	courseList, total, err := models.GetCourse(course, pageRequest)
+	courseList, err := models.GetCourse(course)
 	if err != nil {
 		log.Printf("Query course list failed: %v\n", err)
 		baseResponse.Code = vo.ServerError
 		return
 	}
-	pageResponse := helper.NewPageResponse(total, courseList)
-	baseResponse.Data = pageResponse
+	baseResponse.Data = courseList
 	return
 }
 
@@ -58,17 +56,16 @@ func QueryCourseDetail(course *models.Course) (baseResponse *vo.BaseResponse) {
 	return
 }
 
-func SearchCourse(pageRequest *helper.PageRequest,searchName string) (baseResponse *vo.BaseResponse) {
+func SearchCourse(searchName string) (baseResponse *vo.BaseResponse) {
 	baseResponse = new(vo.BaseResponse)
 	baseResponse.Code = vo.Success
-	courseList, total, err := models.GetSearchCourse(pageRequest,searchName)
+	courseList, err := models.GetSearchCourse(searchName)
 	if err != nil {
 		log.Printf("Query course list failed: %v\n", err)
 		baseResponse.Code = vo.ServerError
 		return
 	}
-	pageResponse := helper.NewPageResponse(total, courseList)
-	baseResponse.Data = pageResponse
+	baseResponse.Data = courseList
 	return
 }
 
@@ -92,18 +89,19 @@ func isCourseExists(courseID int)bool{
 	return true
 }
 
-func GetStudentCourse(studentID string,pageRequest *helper.PageRequest)  (baseResponse *vo.BaseResponse) {
+func GetStudentCourse(studentID string)  (baseResponse *vo.BaseResponse) {
 	baseResponse = new(vo.BaseResponse)
 	baseResponse.Code = vo.Success
 	studentCourse := models.CourseToStudent{
 		StudentID: studentID,
 	}
-	res,total,tmpErr := models.GetCourseStudent(&studentCourse,pageRequest)
+	res,tmpErr := models.GetCourseStudent(&studentCourse)
 	if tmpErr != nil{
 		log.Printf("get course student failed: %v\n", tmpErr)
 		baseResponse.Code = vo.ServerError
 		return
 	}
+	fmt.Printf("result ***************:%v",res)
 	var course []models.Course
 	for i := range res{
 		tmp := models.Course{ID: res[i].CourseID}
@@ -114,7 +112,6 @@ func GetStudentCourse(studentID string,pageRequest *helper.PageRequest)  (baseRe
 		}
 		course = append(course,tmp)
 	}
-	pageResponse := helper.NewPageResponse(total, course)
-	baseResponse.Data = pageResponse
+	baseResponse.Data = res
 	return
 }

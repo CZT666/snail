@@ -52,7 +52,7 @@ func StudentLogin(student *models.Student) (baseResponse *vo.BaseResponse) {
 		}
 		var studentInfo models.Student
 		studentInfo.StudentID = student.StudentID
-		if _, err := models.GetStudent(&studentInfo);err != nil{
+		if  err := models.GetSingleStudent(&studentInfo);err != nil{
 			fmt.Printf("get student error: %v\n", err)
 			baseResponse.Code = vo.Error
 			return

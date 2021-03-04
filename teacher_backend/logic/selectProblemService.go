@@ -1,10 +1,14 @@
 package logic
 
 import (
+	"context"
 	"encoding/json"
+	"fmt"
 	"gitee.com/mirrors/go-xls"
+	"github.com/spf13/cast"
 	"github.com/tealeg/xlsx"
 	"log"
+	"snail/teacher_backend/dao"
 	"snail/teacher_backend/models"
 	"snail/teacher_backend/models/helper"
 	"snail/teacher_backend/utils"
@@ -36,6 +40,11 @@ func AddSelectProblem(req *vo.AddSelectProblemReq, user helper.User) (baseRespon
 		baseResponse.Code = vo.Error
 		baseResponse.Msg = "题目添加成功，但未添加至题集，请尝试手动添加"
 	}
+	key := fmt.Sprintf(BlogSelectProblem,cast.ToString(req.BlogID))
+	if err = dao.RedisDB.Del(context.Background(),key).Err();err!=nil{
+		baseResponse.Code = vo.Error
+		baseResponse.Msg = "删除 redis 失败"
+	}
 	return
 }
 
@@ -46,6 +55,11 @@ func AppendSelectProblem(req *vo.AppendSelectProblemReq) (baseResponse *vo.BaseR
 		log.Printf("Select problem service append single select problem failed: %v\n", err)
 		baseResponse.Code = vo.Error
 		baseResponse.Msg = "增加题目失败"
+	}
+	key := fmt.Sprintf(BlogSelectProblem,cast.ToString(req.BlogId))
+	if err := dao.RedisDB.Del(context.Background(),key).Err();err!=nil{
+		baseResponse.Code = vo.Error
+		baseResponse.Msg = "删除 redis 失败"
 	}
 	return
 }
@@ -84,6 +98,11 @@ func AddSelectProblemBatch(req *vo.AddSelectProblemBatchReq, filePath string, us
 	err = utils.DeleteFile(filePath)
 	if err != nil {
 		log.Printf("Delete file failed: %v\n", err)
+	}
+	key := fmt.Sprintf(BlogSelectProblem,cast.ToString(req.BlogID))
+	if err = dao.RedisDB.Del(context.Background(),key).Err();err!=nil{
+		baseResponse.Code = vo.Error
+		baseResponse.Msg = "删除 redis 失败"
 	}
 	return
 }
@@ -231,6 +250,11 @@ func DeleteSelectProblemFromSet(req *vo.DeleteSelectProblemFromSetReq) (baseResp
 		log.Printf("Select problem service update queSet failed: %v\n", err)
 		baseResponse.Code = vo.Error
 		baseResponse.Msg = "删除失败"
+	}
+	key := fmt.Sprintf(BlogSelectProblem,cast.ToString(req.BlogID))
+	if err := dao.RedisDB.Del(context.Background(),key).Err();err!=nil{
+		baseResponse.Code = vo.Error
+		baseResponse.Msg = "删除 redis 失败"
 	}
 	return
 }

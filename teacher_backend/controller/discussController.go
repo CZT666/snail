@@ -2,13 +2,12 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 	"log"
 	"net/http"
-	"snail/teacher_backend/models/helper"
 	"snail/teacher_backend/logic"
-	"snail/teacher_backend/vo"
 	"snail/teacher_backend/models"
-	"github.com/gin-gonic/gin/binding"
+	"snail/teacher_backend/vo"
 )
 
 func GetRedPoint(c *gin.Context)  {
@@ -34,13 +33,7 @@ func GetAllQuestion(c *gin.Context)  {
 		c.JSON(http.StatusOK, vo.BadResponse(vo.ServerError))
 		return
 	}
-	pageRequest := helper.NewPageRequest()
-	if err := c.BindJSON(&pageRequest); err != nil {
-		log.Printf("get all question page request bind json failed: %v\n", err)
-		c.JSON(http.StatusOK, vo.BadResponse(vo.ParamError))
-		return
-	}
-	baseResponse := logic.GetAllQuestion(user,pageRequest)
+	baseResponse := logic.GetAllQuestion(user)
 	c.JSON(http.StatusOK, baseResponse)
 	return
 }
@@ -82,13 +75,7 @@ func AddAnswer(c *gin.Context){
 
 func GetAnswer(c *gin.Context){
 	questionID := c.Param("question_id")
-	pageRequest := helper.NewPageRequest()
-	if err := c.BindJSON(&pageRequest); err != nil {
-		log.Printf("get all answer page request bind json failed: %v\n", err)
-		c.JSON(http.StatusOK, vo.BadResponse(vo.ParamError))
-		return
-	}
-	baseResponse := logic.GetAnswer(questionID,pageRequest)
+	baseResponse := logic.GetAnswer(questionID)
 	c.JSON(http.StatusOK, baseResponse)
 	return
 }

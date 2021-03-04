@@ -56,11 +56,9 @@ func AddAnswer(ans *Answer) (err error) {
 	return
 }
 
-func GetAnswer(ans *Answer, request *helper.PageRequest) (ansList []*Answer, total int, err error) {
-	page := request.Page
-	pageSize := request.PageSize
-	if err := dao.DB.Where(&ans).Limit(pageSize).Offset((page - 1) * pageSize).Find(&ansList).Count(&total).Error; err != nil {
-		return nil, 0, err
+func GetAnswer(ans *Answer) (ansList []*Answer, err error) {
+	if err := dao.DB.Where(&ans).Find(&ansList).Error; err != nil {
+		return nil, err
 	}
 	return
 }

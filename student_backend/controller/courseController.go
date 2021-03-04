@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"student_bakcend/logic"
 	"student_bakcend/models"
-	"student_bakcend/models/helper"
 	"student_bakcend/utils"
 	"student_bakcend/vo"
 )
@@ -35,13 +34,7 @@ func JoinCourse(c *gin.Context) {
 }
 
 func QueryCourseList(c *gin.Context) {
-	pageRequest := helper.NewPageRequest()
-	if err := c.BindJSON(&pageRequest); err != nil {
-		log.Printf("Query course list bind json failed: %v\n", err)
-		c.JSON(http.StatusOK, vo.BadResponse(vo.ParamError))
-		return
-	}
-	baseResponse := logic.QueryCourseList(pageRequest)
+	baseResponse := logic.QueryCourseList()
 	c.JSON(http.StatusOK, baseResponse)
 	return
 }
@@ -60,13 +53,7 @@ func QueryCourseDetail(c *gin.Context) {
 
 func SearchCourse(c *gin.Context)  {
 	searchName := c.Param("name")
-	pageRequest := helper.NewPageRequest()
-	if err := c.BindJSON(&pageRequest); err != nil {
-		log.Printf("search course bind json failed: %v\n", err)
-		c.JSON(http.StatusOK, vo.BadResponse(vo.ParamError))
-		return
-	}
-	baseResponse := logic.SearchCourse(pageRequest,searchName)
+	baseResponse := logic.SearchCourse(searchName)
 	c.JSON(http.StatusOK, baseResponse)
 	return
 }
@@ -79,13 +66,11 @@ func GetStudentCourse(c *gin.Context) {
 		c.JSON(http.StatusOK, vo.BadResponse(vo.ServerError))
 		return
 	}
-	pageRequest := helper.NewPageRequest()
-	if err := c.BindJSON(&pageRequest); err != nil {
-		log.Printf("Query course list bind json failed: %v\n", err)
-		c.JSON(http.StatusOK, vo.BadResponse(vo.ParamError))
-		return
-	}
-	baseResponse := logic.GetStudentCourse(student.StudentID,pageRequest)
+	//student := models.Student{
+	//	ID: 16,
+	//	StudentID: "20171003389",
+	//	}
+	baseResponse := logic.GetStudentCourse(student.StudentID)
 	c.JSON(http.StatusOK, baseResponse)
 	return
 }

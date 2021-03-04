@@ -2,7 +2,6 @@ package models
 
 import (
 	"student_bakcend/dao"
-	"student_bakcend/models/helper"
 	"time"
 )
 
@@ -28,11 +27,10 @@ func AddQuestion(que *Question) (err error) {
 	return
 }
 
-func GetQuestion(que *Question, request *helper.PageRequest) (queList []*Question, total int, err error) {
-	page := request.Page
-	pageSize := request.PageSize
-	if err := dao.DB.Where(&que).Limit(pageSize).Offset((page - 1) * pageSize).Find(&queList).Count(&total).Error; err != nil {
-		return nil, 0, err
+func GetQuestion(que *Question) (queList []*Question, err error) {
+
+	if err := dao.DB.Where(&que).Find(&queList).Error; err != nil {
+		return nil,  err
 	}
 	return
 }
@@ -42,11 +40,9 @@ func GetSingleQuestion(que *Question) (err error) {
 	return
 }
 
-func GetSearchQuestion(pageRequest *helper.PageRequest, searchName string, courseID string) (questionList []Question, total int, err error) {
-	page := pageRequest.Page
-	pageSize := pageRequest.PageSize
-	if err = dao.DB.Where("title like ? AND course_id = ?", "%"+searchName+"%", courseID).Limit(pageSize).Offset((page - 1) * pageSize).Find(&questionList).Count(&total).Error; err != nil {
-		return nil, 0, err
+func GetSearchQuestion(searchName string, courseID string) (questionList []Question,  err error) {
+	if err = dao.DB.Where("title like ? AND course_id = ?", "%"+searchName+"%", courseID).Find(&questionList).Error; err != nil {
+		return nil, err
 	}
 	return
 }
@@ -56,11 +52,9 @@ func AddAnswer(ans *Answer) (err error) {
 	return
 }
 
-func GetAnswer(ans *Answer, request *helper.PageRequest) (ansList []*Answer, total int, err error) {
-	page := request.Page
-	pageSize := request.PageSize
-	if err := dao.DB.Where(&ans).Limit(pageSize).Offset((page - 1) * pageSize).Find(&ansList).Count(&total).Error; err != nil {
-		return nil, 0, err
+func GetAnswer(ans *Answer) (ansList []*Answer,err error) {
+	if err := dao.DB.Where(&ans).Find(&ansList).Error; err != nil {
+		return nil, err
 	}
 	return
 }

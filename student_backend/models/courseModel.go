@@ -3,7 +3,6 @@ package models
 import (
 	"fmt"
 	"student_bakcend/dao"
-	"student_bakcend/models/helper"
 	"time"
 )
 
@@ -30,21 +29,17 @@ func CreateCourseToStudent(courseToStudent *CourseToStudent) (err error) {
 	return
 }
 
-func GetCourse(course *Course, pageRequest *helper.PageRequest) (courseList []Course, total int, err error) {
-	page := pageRequest.Page
-	pageSize := pageRequest.PageSize
-	if err = dao.DB.Where(&course).Limit(pageSize).Offset((page - 1) * pageSize).Find(&courseList).Count(&total).Error; err != nil {
-		return nil, 0, err
+func GetCourse(course *Course) (courseList []Course, err error) {
+	if err = dao.DB.Where(&course).Find(&courseList).Error; err != nil {
+		return nil, err
 	}
 	fmt.Printf("course list msg:%v\n", courseList)
 	return
 }
 
-func GetSearchCourse(pageRequest *helper.PageRequest, searchName string) (courseList []Course, total int, err error) {
-	page := pageRequest.Page
-	pageSize := pageRequest.PageSize
-	if err = dao.DB.Where("course_title like ?", "%"+searchName+"%").Limit(pageSize).Offset((page - 1) * pageSize).Find(&courseList).Count(&total).Error; err != nil {
-		return nil, 0, err
+func GetSearchCourse(searchName string) (courseList []Course, err error) {
+	if err = dao.DB.Where("course_title like ?", "%"+searchName+"%").Find(&courseList).Error; err != nil {
+		return nil, err
 	}
 	return
 }
@@ -58,11 +53,9 @@ func MatchCourseStudent(course *CourseToStudent) (err error) {
 	return
 }
 
-func GetCourseStudent(course *CourseToStudent, pageRequest *helper.PageRequest)(courseList []CourseToStudent, total int, err error){
-	page := pageRequest.Page
-	pageSize := pageRequest.PageSize
-	if err = dao.DB.Where(&course).Limit(pageSize).Offset((page - 1) * pageSize).Find(&courseList).Count(&total).Error; err != nil {
-		return nil, 0, err
+func GetCourseStudent(course *CourseToStudent)(courseList []CourseToStudent, err error){
+	if err = dao.DB.Where(&course).Find(&courseList).Error; err != nil {
+		return nil, err
 	}
 	fmt.Printf("course list msg:%v\n", courseList)
 	return

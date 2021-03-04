@@ -11,12 +11,9 @@ import (
 func QueryBlogList(request *vo.BlogListRequest) (baseResponse *vo.BaseResponse) {
 	baseResponse = new(vo.BaseResponse)
 	baseResponse.Code = vo.Success
-	pageRequest := new(helper.PageRequest)
-	pageRequest.Page = request.Page
-	pageRequest.PageSize = request.PageSize
 	blog := new(models.Blog)
-	blog.ID = request.BlogID
-	blogList, total, err := models.GetBlog(blog, pageRequest)
+	blog.CourseID = request.CourseID
+	blogList, total, err := models.GetBlog(blog)
 	if err != nil {
 		log.Printf("Bolg service query blog list failed: %v\n", err)
 		baseResponse.Code = vo.Error
