@@ -28,7 +28,7 @@ func CourseOperationMiddleware(idKey string, readOnly bool) func(c *gin.Context)
 			return
 		}else{
 			org, _ := c.Get("student")
-			student, err := utils.GetToken(org)
+			student, err := models.GetToken(org)
 			if err != nil {
 				log.Printf("Get token failed: %v\n", err)
 				c.JSON(http.StatusOK, vo.BadResponse(vo.ServerError))
@@ -37,7 +37,7 @@ func CourseOperationMiddleware(idKey string, readOnly bool) func(c *gin.Context)
 			}
 			tmp := new(models.CourseToStudent)
 			tmp.CourseID = courseID
-			tmp.StudentID = student.StudentID
+			tmp.StudentID = student.GetIdentity()
 			if err = models.MatchCourseStudent(tmp); err != nil {
 				log.Printf("student not allow access course: %v\n", err)
 				c.JSON(http.StatusOK, vo.BadResponse(vo.Error))

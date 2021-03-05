@@ -7,13 +7,12 @@ import (
 	"net/http"
 	"student_bakcend/logic"
 	"student_bakcend/models"
-	"student_bakcend/utils"
 	"student_bakcend/vo"
 )
 
 func JoinCourse(c *gin.Context) {
 	org, _ := c.Get("user")
-	student, err := utils.GetToken(org)
+	student, err := models.GetToken(org)
 	if err != nil {
 		log.Printf("Get token failed: %v\n", err)
 		c.JSON(http.StatusOK, vo.BadResponse(vo.ServerError))
@@ -26,7 +25,7 @@ func JoinCourse(c *gin.Context) {
 		c.JSON(http.StatusOK, vo.BadResponse(vo.ParamError))
 		return
 	}
-	courseToStudent.StudentID = student.StudentID
+	courseToStudent.StudentID = student.GetIdentity()
 	baseResponse := new(vo.BaseResponse)
 	baseResponse = logic.JoinCourse(courseToStudent)
 	c.JSON(http.StatusOK, baseResponse)
@@ -60,7 +59,7 @@ func SearchCourse(c *gin.Context)  {
 
 func GetStudentCourse(c *gin.Context) {
 	org, _ := c.Get("user")
-	student, err := utils.GetToken(org)
+	student, err := models.GetToken(org)
 	if err != nil {
 		log.Printf("Get token failed: %v\n", err)
 		c.JSON(http.StatusOK, vo.BadResponse(vo.ServerError))
@@ -70,7 +69,7 @@ func GetStudentCourse(c *gin.Context) {
 	//	ID: 16,
 	//	StudentID: "20171003389",
 	//	}
-	baseResponse := logic.GetStudentCourse(student.StudentID)
+	baseResponse := logic.GetStudentCourse(student.GetIdentity())
 	c.JSON(http.StatusOK, baseResponse)
 	return
 }

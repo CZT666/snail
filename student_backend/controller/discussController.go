@@ -13,13 +13,13 @@ import (
 
 func AddQuestion(c *gin.Context){
 	question := new(models.Question)
-	fmt.Println("11111111111111111111111111111")
 	if err := c.ShouldBindBodyWith(&question, binding.JSON); err != nil {
 		fmt.Printf("Add question bind json failed: %v\n", err)
 		c.JSON(http.StatusOK, vo.BadResponse(vo.ParamError))
 		return
 	}
 	org, _ := c.Get("user")
+	fmt.Println(org)
 	user, err := models.GetToken(org)
 	//var user helper.User
 	if err != nil {

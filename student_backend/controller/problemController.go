@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 	"student_bakcend/logic"
-	"student_bakcend/utils"
+	"student_bakcend/models"
 	"student_bakcend/vo"
 )
 
@@ -25,7 +25,7 @@ func GetProblem(c *gin.Context) {
 func GetProblemScore(c *gin.Context)  {
 	blogID := c.Param("blog_id")
 	org, _ := c.Get("user")
-	student, err := utils.GetToken(org)
+	student, err := models.GetToken(org)
 	if err != nil {
 		log.Printf("Get token failed: %v\n", err)
 		c.JSON(http.StatusOK, vo.BadResponse(vo.ServerError))
@@ -40,7 +40,7 @@ func GetProblemScore(c *gin.Context)  {
 		c.JSON(http.StatusOK, vo.BadResponse(vo.ParamError))
 		return
 	}
-	baseResponse := logic.GetProblemScore(blogID,student.StudentID)
+	baseResponse := logic.GetProblemScore(blogID,student.GetIdentity())
 	c.JSON(http.StatusOK, baseResponse)
 	return
 }

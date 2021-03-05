@@ -44,7 +44,7 @@ func StudentLogin(student *models.Student) (baseResponse *vo.BaseResponse) {
 	student, ok := isStudent(studentID, pwd)
 	if ok {
 		log.Printf("Student login: %v\n", studentID)
-		tokenString, err := utils.GenToken(student)
+		tokenString, err := models.GenToken(student)
 		if err != nil {
 			fmt.Printf("Generate token error: %v\n", err)
 			baseResponse.Code = vo.TokenError

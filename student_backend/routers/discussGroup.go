@@ -3,12 +3,11 @@ package routers
 import (
 	"github.com/gin-gonic/gin"
 	"student_bakcend/controller"
-	"student_bakcend/middleware"
 )
 
 func discussGroup(engine *gin.Engine){
 	groupDiscuss := engine.Group("/discuss")
-	groupDiscuss.Use(middleware.JWTAuthMiddleware())
+	//groupDiscuss.Use(middleware.JWTAuthMiddleware())
 	{
 		groupDiscuss.POST("/addQuestion",controller.AddQuestion)
 		groupDiscuss.GET("/getAllQuestion/:course_id",controller.GetAllQuestion)

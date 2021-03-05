@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 	"student_bakcend/logic"
-	"student_bakcend/utils"
+	"student_bakcend/models"
 	"student_bakcend/vo"
 )
 
@@ -26,7 +26,7 @@ func SelectScore(c *gin.Context){
 	answers := c.PostForm("answers")
 	blog := c.PostForm("blog_id")
 	org, _ := c.Get("user")
-	student, err := utils.GetToken(org)
+	student, err := models.GetToken(org)
 	if err != nil {
 		log.Printf("Get token failed: %v\n", err)
 		c.JSON(http.StatusOK, vo.BadResponse(vo.ServerError))
@@ -36,7 +36,7 @@ func SelectScore(c *gin.Context){
 	//	ID: 111,
 	//	StudentID: "20171003389",
 	//	}
-	baseResponse := logic.SelectScore(answers,blog,student.StudentID)
+	baseResponse := logic.SelectScore(answers,blog,student.GetIdentity())
 	c.JSON(http.StatusOK, baseResponse)
 	return
 }
