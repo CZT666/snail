@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"github.com/go-redis/redis"
 	"log"
-	"student_bakcend/vo"
-	"student_bakcend/dao"
-	"student_bakcend/models"
-	"student_bakcend/utils"
+	"snail/student_bakcend/vo"
+	"snail/student_bakcend/dao"
+	"snail/student_bakcend/models"
+	"snail/student_bakcend/utils"
 	"time"
 )
 

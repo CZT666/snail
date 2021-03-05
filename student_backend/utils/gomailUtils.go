@@ -6,7 +6,7 @@ import (
 	"log"
 	"net"
 	"net/smtp"
-	"student_bakcend/settings"
+	"snail/student_bakcend/settings"
 )
 
 func SendMail(toMail string, subject string, body string) error {

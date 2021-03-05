@@ -4,8 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
-	"student_bakcend/models"
-	"student_bakcend/vo"
+	"snail/student_bakcend/models"
+	"snail/student_bakcend/vo"
 )
 
 const (

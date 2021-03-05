@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"student_bakcend/settings"
+	"snail/student_bakcend/settings"
 )
 
 var (

@@ -2,8 +2,8 @@ package routers
 
 import (
 	"github.com/gin-gonic/gin"
-	"student_bakcend/controller"
-	"student_bakcend/middleware"
+	"snail/student_bakcend/controller"
+	"snail/student_bakcend/middleware"
 )
 
 func courseGroup(engine *gin.Engine) {

@@ -3,8 +3,8 @@ package logic
 import (
 	"fmt"
 	"log"
-	"student_bakcend/models"
-	"student_bakcend/vo"
+	"snail/student_bakcend/models"
+	"snail/student_bakcend/vo"
 )
 
 func JoinCourse(courseToStudent *models.CourseToStudent)(baseResponse *vo.BaseResponse){

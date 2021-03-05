@@ -8,9 +8,9 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-	"student_bakcend/models"
-	"student_bakcend/utils"
-	"student_bakcend/vo"
+	"snail/student_bakcend/models"
+	"snail/student_bakcend/utils"
+	"snail/student_bakcend/vo"
 )
 
 func CourseOperationMiddleware(idKey string, readOnly bool) func(c *gin.Context) {

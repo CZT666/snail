@@ -1,6 +1,6 @@
 package models
 
-import "student_bakcend/dao"
+import "snail/student_bakcend/dao"
 
 type ScoreRecord struct {
 	ID       int    `json:"id"`

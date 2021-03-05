@@ -1,7 +1,7 @@
 package models
 
 import (
-	"student_bakcend/dao"
+	"snail/student_bakcend/dao"
 	"time"
 )
 

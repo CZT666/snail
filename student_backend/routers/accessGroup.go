@@ -2,7 +2,7 @@ package routers
 
 import (
 	"github.com/gin-gonic/gin"
-	"student_bakcend/controller"
+	"snail/student_bakcend/controller"
 )
 
 func accessGroup(engine *gin.Engine) {

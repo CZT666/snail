@@ -7,10 +7,10 @@ import (
 	"github.com/go-redis/redis/v8"
 	"github.com/spf13/cast"
 	"log"
-	"student_bakcend/dao"
-	"student_bakcend/models"
-	"student_bakcend/models/helper"
-	"student_bakcend/vo"
+	"snail/student_bakcend/dao"
+	"snail/student_bakcend/models"
+	"snail/student_bakcend/models/helper"
+	"snail/student_bakcend/vo"
 	"time"
 )
 

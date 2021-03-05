@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"github.com/nsqio/go-nsq"
 	"log"
-	"student_bakcend/settings"
-	"student_bakcend/utils"
-	"student_bakcend/vo"
+	"snail/student_bakcend/settings"
+	"snail/student_bakcend/utils"
+	"snail/student_bakcend/vo"
 	"time"
 )
 

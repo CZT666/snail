@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/nsqio/go-nsq"
 	"log"
-	"student_bakcend/settings"
+	"snail/student_bakcend/settings"
 )
 
 var ResetPwdNSQProducer *nsq.Producer

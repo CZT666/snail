@@ -2,7 +2,7 @@ package models
 
 import (
 	"fmt"
-	"student_bakcend/dao"
+	"snail/student_bakcend/dao"
 	"time"
 )
 

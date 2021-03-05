@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"reflect"
-	"student_bakcend/models/helper"
+	"snail/student_bakcend/models/helper"
 	"time"
 )
 
