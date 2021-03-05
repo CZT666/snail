@@ -19,8 +19,9 @@ func AddQuestion(c *gin.Context){
 		return
 	}
 	org, _ := c.Get("user")
-	fmt.Println(org)
 	user, err := models.GetToken(org)
+	fmt.Printf("***************************************")
+	fmt.Println(user)
 	//var user helper.User
 	if err != nil {
 		log.Printf("question controller get token failed: %v\n", err)

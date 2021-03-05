@@ -1,14 +1,12 @@
 package models
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
-	"log"
 	"reflect"
-	"strconv"
-	"strings"
 	"student_bakcend/models/helper"
 	"time"
 )
@@ -55,7 +53,7 @@ func ParseToken(tokenString string) (*Token, error) {
 func GetToken(org interface{}) (user helper.User, err error) {
 	//t := reflect.TypeOf(org)
 	v := reflect.ValueOf(org)
-	userIno := v.Elem().FieldByName("Student").Interface()
+	userIno := v.Elem().FieldByName("User").Interface()
 	fmt.Printf("user info: %v\n", userIno)
 	jsonString := genJson(userIno)
 	student := new(Student)
@@ -65,24 +63,24 @@ func GetToken(org interface{}) (user helper.User, err error) {
 }
 
 func genJson(x interface{}) string {
-	userInfo := fmt.Sprintf("%v", x)
-	userInfo = strings.Trim(userInfo, "{")
-	userInfo = strings.Trim(userInfo, "}")
-	list := strings.Split(userInfo, " ")
-	log.Printf("list: %v\n", list)
-	student := new(Student)
-	student.ID, _ = strconv.Atoi(list[0])
-	student.Name = list[1]
-	student.StudentID = list[2]
-	student.Mail = list[3]
-	student.Pwd = list[4]
-	student.Gender, _ = strconv.Atoi(list[5])
-	student.Faculty = list[6]
-	student.Major = list[7]
-	jsonString, err := json.Marshal(student)
-	if err != nil {
-		log.Printf("convert json failed: %v\n", err)
+	v := reflect.ValueOf(x)
+	stringBuffer := new(bytes.Buffer)
+	stringBuffer.WriteString("{")
+	for index, val := range v.MapKeys() {
+		stringBuffer.WriteString("\"")
+		stringBuffer.WriteString(val.String())
+		stringBuffer.WriteString("\":")
+		if v.MapIndex(val).Elem().Kind() == reflect.Float64 {
+			stringBuffer.WriteString(fmt.Sprintf("%v", v.MapIndex(val).Elem().Float()))
+		} else {
+			stringBuffer.WriteString("\"")
+			stringBuffer.WriteString(fmt.Sprintf("%v", v.MapIndex(val)))
+			stringBuffer.WriteString("\"")
+		}
+		if index != len(v.MapKeys())-1 {
+			stringBuffer.WriteString(",")
+		}
 	}
-	log.Printf("res: %v\n", string(jsonString))
-	return string(jsonString)
+	stringBuffer.WriteString("}")
+	return stringBuffer.String()
 }

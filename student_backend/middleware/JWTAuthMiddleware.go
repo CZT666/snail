@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 	"student_bakcend/models"
 	"student_bakcend/vo"
@@ -31,6 +32,7 @@ func JWTAuthMiddleware() func(c *gin.Context) {
 			c.Abort()
 			return
 		}
+		log.Printf("user -------%v\n", mc)
 		c.Set("user", mc)
 		c.Next()
 	}

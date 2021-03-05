@@ -7,7 +7,6 @@ import (
 	"github.com/go-redis/redis/v8"
 	"github.com/spf13/cast"
 	"log"
-	"os/exec"
 	"student_bakcend/dao"
 	"student_bakcend/models"
 	"student_bakcend/models/helper"
@@ -156,14 +155,6 @@ func SearchQuestion( searchName string, courseID string) (baseResponse *vo.BaseR
 		baseResponse.Code = vo.ServerError
 		return
 	}
-	arg := []string{"D:\\recommend\\aaa.py", searchName}
-	out, err := exec.Command("python", arg...).Output()
-	if err != nil {
-		fmt.Printf("CmdPythonVideoSpider ==> %s", err)
-		return
-	}
-	fmt.Println("11111111111111111111111111111111111111")
-	fmt.Println(string(out))
 	baseResponse.Data = courseList
 	return
 }
