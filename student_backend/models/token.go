@@ -7,12 +7,11 @@ import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"reflect"
-	"student_bakcend/models/helper"
+	"snail/student_bakcend/models/helper"
 	"time"
 )
 
 type Token struct {
-	Type int         `json:"type"`
 	User interface{} `json:"user"`
 	jwt.StandardClaims
 }
@@ -24,10 +23,9 @@ const (
 
 var TokenSecret = []byte("snail")
 
-func GenToken(user interface{}, userType int) (string, error) {
+func GenToken(student *Student) (string, error) {
 	info := new(Token)
-	info.User = user
-	info.Type = userType
+	info.User = student
 	return genToken(info)
 }
 
@@ -51,21 +49,16 @@ func ParseToken(tokenString string) (*Token, error) {
 	return nil, errors.New("invalid token")
 }
 
+
 func GetToken(org interface{}) (user helper.User, err error) {
 	//t := reflect.TypeOf(org)
 	v := reflect.ValueOf(org)
-	typeValue := v.Elem().FieldByName("Type").Int()
 	userIno := v.Elem().FieldByName("User").Interface()
+	fmt.Printf("user info: %v\n", userIno)
 	jsonString := genJson(userIno)
-	if typeValue == 1 {
-		teacher := new(Teacher)
-		err = json.Unmarshal([]byte(jsonString), &teacher)
-		user = teacher
-	} else {
-		assistance := new(Student)
-		err = json.Unmarshal([]byte(jsonString), &assistance)
-		user = assistance
-	}
+	student := new(Student)
+	err = json.Unmarshal([]byte(jsonString), &student)
+	user = student
 	return
 }
 

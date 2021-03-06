@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/go-redis/redis/v8"
 	"log"
-	"student_bakcend/settings"
+	"snail/student_bakcend/settings"
 	"time"
 )
 

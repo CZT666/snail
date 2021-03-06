@@ -2,8 +2,8 @@ package routers
 
 import (
 	"github.com/gin-gonic/gin"
-	"student_bakcend/controller"
-	"student_bakcend/middleware"
+	"snail/student_bakcend/controller"
+	"snail/student_bakcend/middleware"
 )
 
 func problemGroup(engine *gin.Engine) {
@@ -13,7 +13,6 @@ func problemGroup(engine *gin.Engine) {
 		groupProblem.GET("/getProblem/:blog_id", controller.GetProblem)
 		groupProblem.GET("/getProblemScore/:blog_id",controller.GetProblemScore)
 	}
-
 	groupSelect := engine.Group("/selectProblem")
 	groupSelect.Use(middleware.JWTAuthMiddleware())
 	{

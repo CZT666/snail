@@ -2,21 +2,18 @@ package logic
 
 import (
 	"log"
-	"student_bakcend/models"
-	"student_bakcend/models/helper"
-	"student_bakcend/vo"
+	"snail/student_bakcend/models"
+	"snail/student_bakcend/models/helper"
+	"snail/student_bakcend/vo"
 )
 
 
 func QueryBlogList(request *vo.BlogListRequest) (baseResponse *vo.BaseResponse) {
 	baseResponse = new(vo.BaseResponse)
 	baseResponse.Code = vo.Success
-	pageRequest := new(helper.PageRequest)
-	pageRequest.Page = request.Page
-	pageRequest.PageSize = request.PageSize
 	blog := new(models.Blog)
-	blog.ID = request.BlogID
-	blogList, total, err := models.GetBlog(blog, pageRequest)
+	blog.CourseID = request.CourseID
+	blogList, total, err := models.GetBlog(blog)
 	if err != nil {
 		log.Printf("Bolg service query blog list failed: %v\n", err)
 		baseResponse.Code = vo.Error

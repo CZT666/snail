@@ -5,9 +5,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
-	"student_bakcend/vo"
-	"student_bakcend/logic"
-	"student_bakcend/models"
+	"snail/student_bakcend/vo"
+	"snail/student_bakcend/logic"
+	"snail/student_bakcend/models"
 )
 
 // TODO 邮箱校验

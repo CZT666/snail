@@ -1,8 +1,8 @@
 package models
 
 import (
-	"student_bakcend/dao"
-	"student_bakcend/models/helper"
+	"snail/student_bakcend/dao"
+	"snail/student_bakcend/models/helper"
 	"time"
 )
 
@@ -18,10 +18,8 @@ type Blog struct {
 	UpdateTime time.Time `json:"update_time"`
 }
 
-func GetBlog(blog *Blog, request *helper.PageRequest) (blogList []Blog, total int, err error) {
-	page := request.Page
-	pageSize := request.PageSize
-	if err := dao.DB.Where(&blog).Limit(pageSize).Offset((page - 1) * pageSize).Find(&blogList).Count(&total).Error; err != nil {
+func GetBlog(blog *Blog) (blogList []Blog, total int, err error) {
+	if err := dao.DB.Where(&blog).Find(&blogList).Count(&total).Error; err != nil {
 		return nil, 0, err
 	}
 	return

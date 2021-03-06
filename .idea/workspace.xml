@@ -8,20 +8,21 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/student_backend/controller/courseController.go" beforeDir="false" afterPath="$PROJECT_DIR$/student_backend/controller/courseController.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/student_backend/controller/discussController.go" beforeDir="false" afterPath="$PROJECT_DIR$/student_backend/controller/discussController.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/student_backend/controller/problemController.go" beforeDir="false" afterPath="$PROJECT_DIR$/student_backend/controller/problemController.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/student_backend/controller/selectProblemController.go" beforeDir="false" afterPath="$PROJECT_DIR$/student_backend/controller/selectProblemController.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/student_backend/logic/const.go" beforeDir="false" afterPath="$PROJECT_DIR$/student_backend/logic/const.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/student_backend/logic/blogService.go" beforeDir="false" afterPath="$PROJECT_DIR$/student_backend/logic/blogService.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/student_backend/logic/courseService.go" beforeDir="false" afterPath="$PROJECT_DIR$/student_backend/logic/courseService.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/student_backend/logic/discussService.go" beforeDir="false" afterPath="$PROJECT_DIR$/student_backend/logic/discussService.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/student_backend/logic/problemService.go" beforeDir="false" afterPath="$PROJECT_DIR$/student_backend/logic/problemService.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/student_backend/logic/selectProblemService.go" beforeDir="false" afterPath="$PROJECT_DIR$/student_backend/logic/selectProblemService.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/student_backend/logic/studentService.go" beforeDir="false" afterPath="$PROJECT_DIR$/student_backend/logic/studentService.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/student_backend/models/blogModel.go" beforeDir="false" afterPath="$PROJECT_DIR$/student_backend/models/blogModel.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/student_backend/models/courseModel.go" beforeDir="false" afterPath="$PROJECT_DIR$/student_backend/models/courseModel.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/student_backend/models/discussModel.go" beforeDir="false" afterPath="$PROJECT_DIR$/student_backend/models/discussModel.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/student_backend/routers/accessGroup.go" beforeDir="false" afterPath="$PROJECT_DIR$/student_backend/routers/accessGroup.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/student_backend/routers/blogGroup.go" beforeDir="false" afterPath="$PROJECT_DIR$/student_backend/routers/blogGroup.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/student_backend/routers/courseGroup.go" beforeDir="false" afterPath="$PROJECT_DIR$/student_backend/routers/courseGroup.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/student_backend/routers/discussGroup.go" beforeDir="false" afterPath="$PROJECT_DIR$/student_backend/routers/discussGroup.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/student_backend/routers/problemGroup.go" beforeDir="false" afterPath="$PROJECT_DIR$/student_backend/routers/problemGroup.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/student_backend/vo/blogVO.go" beforeDir="false" afterPath="$PROJECT_DIR$/student_backend/vo/blogVO.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/teacher_backend/controller/discussController.go" beforeDir="false" afterPath="$PROJECT_DIR$/teacher_backend/controller/discussController.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/teacher_backend/logic/discussServive.go" beforeDir="false" afterPath="$PROJECT_DIR$/teacher_backend/logic/discussServive.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/teacher_backend/logic/selectProblemService.go" beforeDir="false" afterPath="$PROJECT_DIR$/teacher_backend/logic/selectProblemService.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/teacher_backend/models/discussModel.go" beforeDir="false" afterPath="$PROJECT_DIR$/teacher_backend/models/discussModel.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/teacher_backend/routers/discussGroup.go" beforeDir="false" afterPath="$PROJECT_DIR$/teacher_backend/routers/discussGroup.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -62,14 +63,14 @@
     <property name="configurable.Project.GOPATH.is.expanded" value="true" />
     <property name="go.import.settings.migrated" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/student_backend/models" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/student_backend" />
     <property name="settings.editor.selected.configurable" value="go.vgo" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\GoCode\src\snail\student_backend" />
       <recent name="D:\GoCode\src\snail\student_backend\models" />
       <recent name="D:\GoCode\src\snail\teacher_backend" />
-      <recent name="D:\GoCode\src\snail\student_backend" />
       <recent name="D:\GoCode\src\snail\teacher_backend\models" />
       <recent name="D:\GoCode\src\snail\teacher_backend\logic" />
     </key>

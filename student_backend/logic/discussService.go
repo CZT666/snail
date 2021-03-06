@@ -7,10 +7,10 @@ import (
 	"github.com/go-redis/redis/v8"
 	"github.com/spf13/cast"
 	"log"
-	"student_bakcend/dao"
-	"student_bakcend/models"
-	"student_bakcend/models/helper"
-	"student_bakcend/vo"
+	"snail/student_bakcend/dao"
+	"snail/student_bakcend/models"
+	"snail/student_bakcend/models/helper"
+	"snail/student_bakcend/vo"
 	"time"
 )
 
@@ -119,18 +119,17 @@ func AddQuestion(question *models.Question, user helper.User) (baseResponse *vo.
 	return
 }
 
-func GetAllQuestion(courseID string, pageRequest *helper.PageRequest) (baseResponse *vo.BaseResponse) {
+func GetAllQuestion(courseID string) (baseResponse *vo.BaseResponse) {
 	baseResponse = new(vo.BaseResponse)
 	baseResponse.Code = vo.Success
 	tempQuestion := models.Question{CourseID: cast.ToInt(courseID)}
-	result, total, err := models.GetQuestion(&tempQuestion, pageRequest)
+	result, err := models.GetQuestion(&tempQuestion)
 	if err != nil {
 		log.Printf("queans service get all question failed: %v\n", err)
 		baseResponse.Code = vo.Error
 		baseResponse.Msg = "查询失败"
 	}
-	pageResponse := helper.NewPageResponse(total, result)
-	baseResponse.Data = pageResponse
+	baseResponse.Data = result
 	return
 }
 
@@ -147,17 +146,16 @@ func GetSingleQuestion(questionID string) (baseResponse *vo.BaseResponse) {
 	return
 }
 
-func SearchQuestion(pageRequest *helper.PageRequest, searchName string, courseID string) (baseResponse *vo.BaseResponse) {
+func SearchQuestion( searchName string, courseID string) (baseResponse *vo.BaseResponse) {
 	baseResponse = new(vo.BaseResponse)
 	baseResponse.Code = vo.Success
-	courseList, total, err := models.GetSearchQuestion(pageRequest, searchName, courseID)
+	courseList, err := models.GetSearchQuestion(searchName, courseID)
 	if err != nil {
 		log.Printf("search question list failed: %v\n", err)
 		baseResponse.Code = vo.ServerError
 		return
 	}
-	pageResponse := helper.NewPageResponse(total, courseList)
-	baseResponse.Data = pageResponse
+	baseResponse.Data = courseList
 	return
 }
 
@@ -274,17 +272,16 @@ func AddAnswer(answer *models.Answer, user helper.User) (baseResponse *vo.BaseRe
 	return
 }
 
-func GetAnswer(questionID string, pageRequest *helper.PageRequest) (baseResponse *vo.BaseResponse) {
+func GetAnswer(questionID string) (baseResponse *vo.BaseResponse) {
 	baseResponse = new(vo.BaseResponse)
 	baseResponse.Code = vo.Success
 	tempAnswer := models.Answer{QuestionID: cast.ToInt(questionID)}
-	result, total, err := models.GetAnswer(&tempAnswer, pageRequest)
+	result,err := models.GetAnswer(&tempAnswer)
 	if err != nil {
 		log.Printf("discuss service get answer failed: %v\n", err)
 		baseResponse.Code = vo.Error
 		baseResponse.Msg = "查询失败"
 	}
-	pageResponse := helper.NewPageResponse(total, result)
-	baseResponse.Data = pageResponse
+	baseResponse.Data = result
 	return
 }

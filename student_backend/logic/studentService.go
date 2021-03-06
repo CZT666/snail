@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"github.com/go-redis/redis"
 	"log"
-	"student_bakcend/vo"
-	"student_bakcend/dao"
-	"student_bakcend/models"
-	"student_bakcend/utils"
+	"snail/student_bakcend/vo"
+	"snail/student_bakcend/dao"
+	"snail/student_bakcend/models"
+	"snail/student_bakcend/utils"
 	"time"
 )
 
@@ -44,7 +44,7 @@ func StudentLogin(student *models.Student) (baseResponse *vo.BaseResponse) {
 	student, ok := isStudent(studentID, pwd)
 	if ok {
 		log.Printf("Student login: %v\n", studentID)
-		tokenString, err := utils.GenToken(student)
+		tokenString, err := models.GenToken(student)
 		if err != nil {
 			fmt.Printf("Generate token error: %v\n", err)
 			baseResponse.Code = vo.TokenError
@@ -52,7 +52,7 @@ func StudentLogin(student *models.Student) (baseResponse *vo.BaseResponse) {
 		}
 		var studentInfo models.Student
 		studentInfo.StudentID = student.StudentID
-		if _, err := models.GetStudent(&studentInfo);err != nil{
+		if  err := models.GetSingleStudent(&studentInfo);err != nil{
 			fmt.Printf("get student error: %v\n", err)
 			baseResponse.Code = vo.Error
 			return

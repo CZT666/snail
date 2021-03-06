@@ -1,31 +1,33 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"log"
 	"net/http"
-	"student_bakcend/logic"
-	"student_bakcend/models"
-	"student_bakcend/models/helper"
-	"student_bakcend/vo"
+	"snail/student_bakcend/logic"
+	"snail/student_bakcend/models"
+	"snail/student_bakcend/vo"
 )
 
 func AddQuestion(c *gin.Context){
 	question := new(models.Question)
 	if err := c.ShouldBindBodyWith(&question, binding.JSON); err != nil {
-		log.Printf("Add question bind json failed: %v\n", err)
+		fmt.Printf("Add question bind json failed: %v\n", err)
 		c.JSON(http.StatusOK, vo.BadResponse(vo.ParamError))
 		return
 	}
-	//org, _ := c.Get("user")
-	//user, err := models.GetToken(org)
-	var user helper.User
-	//if err != nil {
-	//	log.Printf("question controller get token failed: %v\n", err)
-	//	c.JSON(http.StatusOK, vo.BadResponse(vo.ServerError))
-	//	return
-	//}
+	org, _ := c.Get("user")
+	user, err := models.GetToken(org)
+	fmt.Printf("***************************************")
+	fmt.Println(user)
+	//var user helper.User
+	if err != nil {
+		log.Printf("question controller get token failed: %v\n", err)
+		c.JSON(http.StatusOK, vo.BadResponse(vo.ServerError))
+		return
+	}
 	baseResponse := logic.AddQuestion(question, user)
 	c.JSON(http.StatusOK, baseResponse)
 	return
@@ -33,13 +35,7 @@ func AddQuestion(c *gin.Context){
 
 func GetAllQuestion(c *gin.Context){
 	courseID := c.Param("course_id")
-	pageRequest := helper.NewPageRequest()
-	if err := c.BindJSON(&pageRequest); err != nil {
-		log.Printf("get all question page request bind json failed: %v\n", err)
-		c.JSON(http.StatusOK, vo.BadResponse(vo.ParamError))
-		return
-	}
-	baseResponse := logic.GetAllQuestion(courseID,pageRequest)
+	baseResponse := logic.GetAllQuestion(courseID)
 	c.JSON(http.StatusOK, baseResponse)
 	return
 }
@@ -54,13 +50,7 @@ func GetSingleQuestion(c *gin.Context){
 func SearchQuestion(c *gin.Context)  {
 	searchName := c.Param("name")
 	courseID := c.Param("course_id")
-	pageRequest := helper.NewPageRequest()
-	if err := c.BindJSON(&pageRequest); err != nil {
-		log.Printf("search question bind json failed: %v\n", err)
-		c.JSON(http.StatusOK, vo.BadResponse(vo.ParamError))
-		return
-	}
-	baseResponse := logic.SearchQuestion(pageRequest,searchName,courseID)
+	baseResponse := logic.SearchQuestion(searchName,courseID)
 	c.JSON(http.StatusOK, baseResponse)
 	return
 }
@@ -72,14 +62,14 @@ func AddAnswer(c *gin.Context){
 		c.JSON(http.StatusOK, vo.BadResponse(vo.ParamError))
 		return
 	}
-	//org, _ := c.Get("user")
-	//user, err := models.GetToken(org)
-	var user helper.User
-	//if err != nil {
-	//	log.Printf("question controller get token failed: %v\n", err)
-	//	c.JSON(http.StatusOK, vo.BadResponse(vo.ServerError))
-	//	return
-	//}
+	org, _ := c.Get("user")
+	user, err := models.GetToken(org)
+	//var user helper.User
+	if err != nil {
+		log.Printf("question controller get token failed: %v\n", err)
+		c.JSON(http.StatusOK, vo.BadResponse(vo.ServerError))
+		return
+	}
 	baseResponse := logic.AddAnswer(answer, user)
 	c.JSON(http.StatusOK, baseResponse)
 	return
@@ -87,13 +77,7 @@ func AddAnswer(c *gin.Context){
 
 func GetAnswer(c *gin.Context){
 	questionID := c.Param("question_id")
-	pageRequest := helper.NewPageRequest()
-	if err := c.BindJSON(&pageRequest); err != nil {
-		log.Printf("get all answer page request bind json failed: %v\n", err)
-		c.JSON(http.StatusOK, vo.BadResponse(vo.ParamError))
-		return
-	}
-	baseResponse := logic.GetAnswer(questionID,pageRequest)
+	baseResponse := logic.GetAnswer(questionID)
 	c.JSON(http.StatusOK, baseResponse)
 	return
 }

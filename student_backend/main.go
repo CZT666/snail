@@ -3,9 +3,10 @@ package main
 import (
 	"fmt"
 	"log"
-	"student_bakcend/dao"
-	"student_bakcend/routers"
-	"student_bakcend/settings"
+	"snail/student_bakcend/dao"
+	"snail/student_bakcend/routers"
+	"snail/student_bakcend/settings"
+	"snail/student_bakcend/logic"
 )
 
 func main() {
@@ -23,16 +24,16 @@ func main() {
 		return
 	}
 	defer dao.CloseRedis()
-	//err = dao.InitResetPwdNSQ(settings.Conf.NSQConfig)
-	//if err != nil {
-	//	fmt.Printf("init reset pwd nsq failed, err:%v\n", err)
-	//	return
-	//}
-	//err = logic.InitResetPwdConsumer(settings.Conf.ResetPwdConsumerConfig)
-	//if err != nil {
-	//	fmt.Printf("init reset pwd consumer failed, err:%v\n", err)
-	//	return
-	//}
+	err = dao.InitResetPwdNSQ(settings.Conf.NSQConfig)
+	if err != nil {
+		fmt.Printf("init reset pwd nsq failed, err:%v\n", err)
+		return
+	}
+	err = logic.InitResetPwdConsumer(settings.Conf.ResetPwdConsumerConfig)
+	if err != nil {
+		fmt.Printf("init reset pwd consumer failed, err:%v\n", err)
+		return
+	}
 	r := routers.SetupRouter()
 	r.Run(":8080")
 }

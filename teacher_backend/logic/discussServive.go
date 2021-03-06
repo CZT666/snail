@@ -57,7 +57,7 @@ func GetRedPoint(user helper.User) (baseResponse *vo.BaseResponse) {
 	return
 }
 
-func GetAllQuestion(user helper.User, pageRequest *helper.PageRequest) (baseResponse *vo.BaseResponse) {
+func GetAllQuestion(user helper.User) (baseResponse *vo.BaseResponse) {
 	baseResponse = new(vo.BaseResponse)
 	baseResponse.Code = vo.Success
 	key := fmt.Sprintf(RedisRedPoint,user.GetIdentity())
@@ -70,7 +70,6 @@ func GetAllQuestion(user helper.User, pageRequest *helper.PageRequest) (baseResp
 		return
 	}
 	var resultValue,res []RedPoint
-	total := 0
 	if result != "" {
 		if err := json.Unmarshal([]byte(result), &resultValue); err != nil {
 			baseResponse.Code = vo.Error
@@ -90,12 +89,11 @@ func GetAllQuestion(user helper.User, pageRequest *helper.PageRequest) (baseResp
 			}else{
 				resultFalse =append(resultFalse,resultValue[i])
 			}
-			total +=1
 		}
 		res = append(res, resultTrue...)
 		res = append(res, resultFalse...)
 	}
-	baseResponse.Data = helper.NewPageResponse(total, res)
+	baseResponse.Data = res
 	return
 }
 
@@ -269,17 +267,16 @@ func AddAnswer(answer *models.Answer, user helper.User) (baseResponse *vo.BaseRe
 	return
 }
 
-func GetAnswer(questionID string, pageRequest *helper.PageRequest) (baseResponse *vo.BaseResponse) {
+func GetAnswer(questionID string) (baseResponse *vo.BaseResponse) {
 	baseResponse = new(vo.BaseResponse)
 	baseResponse.Code = vo.Success
 	tempAnswer := models.Answer{QuestionID: cast.ToInt(questionID)}
-	result, total, err := models.GetAnswer(&tempAnswer, pageRequest)
+	result, err := models.GetAnswer(&tempAnswer)
 	if err != nil {
 		log.Printf("discuss service get answer failed: %v\n", err)
 		baseResponse.Code = vo.Error
 		baseResponse.Msg = "查询失败"
 	}
-	pageResponse := helper.NewPageResponse(total, result)
-	baseResponse.Data = pageResponse
+	baseResponse.Data = result
 	return
 }

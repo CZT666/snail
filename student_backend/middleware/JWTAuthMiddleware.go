@@ -2,9 +2,10 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
-	"student_bakcend/utils"
-	"student_bakcend/vo"
+	"snail/student_bakcend/models"
+	"snail/student_bakcend/vo"
 )
 
 const (
@@ -22,7 +23,7 @@ func JWTAuthMiddleware() func(c *gin.Context) {
 			return
 		}
 
-		mc, err := utils.ParseToken(authHeader)
+		mc, err := models.ParseToken(authHeader)
 		if err != nil {
 			baseResponse := new(vo.BaseResponse)
 			baseResponse.Code = vo.InvalidToken
@@ -31,6 +32,7 @@ func JWTAuthMiddleware() func(c *gin.Context) {
 			c.Abort()
 			return
 		}
+		log.Printf("user -------%v\n", mc)
 		c.Set("user", mc)
 		c.Next()
 	}
